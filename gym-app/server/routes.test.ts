@@ -24,11 +24,11 @@ describe("content routes", () => {
     expect((await body(res)).data.status).toBe("ok");
   });
 
-  test("GET /api/curriculum returns 11 modules", async () => {
+  test("GET /api/curriculum returns 13 modules", async () => {
     const res = (await handleApi(GET("/api/curriculum")))!;
     const json = await body(res);
     expect(json.success).toBe(true);
-    expect(json.data.modules).toHaveLength(11);
+    expect(json.data.modules).toHaveLength(13);
   });
 
   test("GET /api/progress returns an envelope with current", async () => {

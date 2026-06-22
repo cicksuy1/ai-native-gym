@@ -16,17 +16,17 @@ import {
 beforeEach(() => invalidate());
 
 describe("parseCurriculum", () => {
-  test("parses all 11 modules in order", () => {
+  test("parses all 13 modules in order", () => {
     const mods = parseCurriculum();
-    expect(mods).toHaveLength(11);
+    expect(mods).toHaveLength(13);
     expect(mods[0]!.number).toBe(0);
-    expect(mods[10]!.number).toBe(10);
+    expect(mods[12]!.number).toBe(12);
   });
 
   test("module 0 is the harness module with a clean title", () => {
     const m0 = parseCurriculum()[0]!;
     expect(m0.slug).toBe("harness");
-    expect(m0.title).toBe("Setup & Harness Fluency");
+    expect(m0.title).toBe("Getting Started & Harness Fluency");
     expect(m0.principle.length).toBeGreaterThan(10);
   });
 
@@ -53,13 +53,15 @@ describe("parseCurriculum", () => {
 });
 
 describe("allSlugs", () => {
-  test("returns the 11 expected slugs", () => {
+  test("returns the 13 expected slugs in curriculum order", () => {
     expect(allSlugs()).toEqual([
       "harness",
+      "first-drive",
       "context",
+      "verify",
       "planning",
       "spec",
-      "verify",
+      "ship-feature",
       "tdd",
       "review",
       "delegate",
