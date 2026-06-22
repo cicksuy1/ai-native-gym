@@ -13,6 +13,10 @@ import {
 
 type Tab = "lesson" | "drill" | "challenge";
 
+const SIDEBAR = { min: 210, max: 460, default: 296 };
+const CHAT = { min: 320, max: 820, default: 430 };
+const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
+
 export function App() {
   const [modules, setModules] = useState<Module[]>([]);
   const [progress, setProgress] = useState<Progress | null>(null);
@@ -26,6 +30,32 @@ export function App() {
   const [input, setInput] = useState("");
   const [cost, setCost] = useState(0);
   const [celebrating, setCelebrating] = useState(false);
+
+  // Resizable / collapsible layout.
+  const [sidebarW, setSidebarW] = useState(SIDEBAR.default);
+  const [chatW, setChatW] = useState(CHAT.default);
+  const [collapsed, setCollapsed] = useState(false);
+
+  // A drag on a column edge updates that column's width live. `dir` is +1 when
+  // dragging right grows the column (left sidebar) and -1 when it shrinks it
+  // (right chat panel, which is anchored to the window edge).
+  const startResize = useCallback(
+    (set: (w: number) => void, startW: number, min: number, max: number, dir: 1 | -1) =>
+      (e: React.PointerEvent) => {
+        e.preventDefault();
+        const startX = e.clientX;
+        const move = (ev: PointerEvent) => set(clamp(startW + dir * (ev.clientX - startX), min, max));
+        const up = () => {
+          window.removeEventListener("pointermove", move);
+          window.removeEventListener("pointerup", up);
+          document.body.classList.remove("resizing");
+        };
+        window.addEventListener("pointermove", move);
+        window.addEventListener("pointerup", up);
+        document.body.classList.add("resizing");
+      },
+    [],
+  );
 
   const refreshProgress = useCallback(() => {
     api.progress().then(setProgress).catch(() => {});
@@ -75,10 +105,22 @@ export function App() {
 
   const completed = new Set(progress?.completed.map((r) => r.module) ?? []);
 
+  const cols = `${collapsed ? "0px 0px" : `${sidebarW}px 6px`} minmax(0, 1fr) 6px ${chatW}px`;
+
   return (
-    <div className="app">
+    <div className={`app${collapsed ? " collapsed" : ""}`} style={{ gridTemplateColumns: cols }}>
+      {collapsed && (
+        <button className="expand-rail" title="Show modules" onClick={() => setCollapsed(false)}>
+          ☰
+        </button>
+      )}
       <aside className="sidebar">
-        <h1 className="brand">AI-Native Gym 🏋️</h1>
+        <div className="brand-row">
+          <h1 className="brand">AI-Native Gym 🏋️</h1>
+          <button className="collapse-btn" title="Hide modules" onClick={() => setCollapsed(true)}>
+            ‹
+          </button>
+        </div>
         <p className="tagline">Become a better <em>executor</em> of AI coding tools.</p>
         <nav className="modules">
           {modules.map((m) => (
@@ -87,7 +129,10 @@ export function App() {
               className={`module-row${slug === m.slug ? " active" : ""}${m.isSpine ? " spine" : ""}`}
               onClick={() => openModule(m.slug)}
             >
-              <span className="badge">{completed.has(m.slug) ? "✅" : progress?.current === m.slug ? "▶" : "⬜"}</span>
+              <span
+                className={`badge ${completed.has(m.slug) ? "done" : progress?.current === m.slug ? "current" : "todo"}`}
+                aria-hidden
+              />
               <span className="mod-num">{m.number}</span>
               <span className="mod-title">{m.title}{m.isSpine ? " ⭐" : ""}</span>
             </button>
@@ -100,6 +145,12 @@ export function App() {
           {cost > 0 && <span className="cost">${cost.toFixed(3)}</span>}
         </div>
       </aside>
+
+      <div
+        className={`resizer${collapsed ? " hidden" : ""}`}
+        title="Drag to resize"
+        onPointerDown={collapsed ? undefined : startResize(setSidebarW, sidebarW, SIDEBAR.min, SIDEBAR.max, 1)}
+      />
 
       <main className="content">
         {celebrating && <div className="celebrate">🎉 Module passed — nicely driven!</div>}
@@ -142,6 +193,12 @@ export function App() {
           </>
         )}
       </main>
+
+      <div
+        className="resizer"
+        title="Drag to resize"
+        onPointerDown={startResize(setChatW, chatW, CHAT.min, CHAT.max, -1)}
+      />
 
       <section className="chat">
         <header className="chat-head">Coach</header>
