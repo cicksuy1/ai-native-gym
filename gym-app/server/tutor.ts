@@ -282,6 +282,7 @@ function initConversation(slug: string, { fresh }: { fresh: boolean }): Host {
     } catch (err) {
       console.error("tutor: conversation loop error:", (err as Error).message);
       broadcast("tutor_message", { text: "_(coach connection error — reconnecting on next action)_" });
+      broadcast("tutor_idle", {});
     } finally {
       h.state = "dead";
       queue.close();
@@ -331,8 +332,11 @@ function initConversation(slug: string, { fresh }: { fresh: boolean }): Host {
       }
       return;
     }
-    if (msg.type === "result" && typeof msg.total_cost_usd === "number") {
-      broadcast("cost_update", { totalCostUsd: msg.total_cost_usd });
+    if (msg.type === "result") {
+      if (typeof msg.total_cost_usd === "number") {
+        broadcast("cost_update", { totalCostUsd: msg.total_cost_usd });
+      }
+      broadcast("tutor_idle", {}); // turn finished — clear the "thinking" indicator
     }
   }
 

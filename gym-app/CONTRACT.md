@@ -121,6 +121,7 @@ Validates against allowlist, persists into `.session.json`, returns
 |-------|------|---------|
 | `tutor_partial` | `{ "text": "<delta>" }` | streaming text of the in-progress turn |
 | `tutor_message` | `{ "text": "<full markdown>" }` | a completed conductor turn — render as GFM |
+| `tutor_idle` | `{}` | the conductor's turn finished (or errored) — clear the "thinking" indicator |
 | `tool_activity` | `{ "text": "📖 Read lessons/harness.md" }` | the conductor used a tool — dimmed line |
 | `session_changed` | `{ "slug", "sessionId", "model", "fresh" }` | a conversation started/resumed |
 | `progress_changed` | `{}` | PROGRESS.local.md changed — refetch `/api/progress` |

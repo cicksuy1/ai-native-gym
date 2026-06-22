@@ -31,6 +31,7 @@ export function App() {
   const [cost, setCost] = useState(0);
   const [celebrating, setCelebrating] = useState(false);
   const [model, setModel] = useState("sonnet");
+  const [busy, setBusy] = useState(false);
 
   // Resizable / collapsible layout.
   const [sidebarW, setSidebarW] = useState(SIDEBAR.default);
@@ -69,13 +70,19 @@ export function App() {
     refreshProgress();
     api.status().then((s) => { if (s.model) setModel(s.model); }).catch(() => {});
     const unsub = subscribe({
-      tutor_partial: (d) => setPartial((p) => p + (d.text ?? "")),
+      tutor_partial: (d) => {
+        setBusy(true);
+        setPartial((p) => p + (d.text ?? ""));
+      },
       tutor_message: (d) => {
         setPartial("");
         setTurns((t) => [...t, { kind: "tutor", text: d.text ?? "", ts: Date.now() }]);
       },
-      tool_activity: (d) =>
-        setTurns((t) => [...t, { kind: "activity", text: d.text ?? "", ts: Date.now() }]),
+      tool_activity: (d) => {
+        setBusy(true);
+        setTurns((t) => [...t, { kind: "activity", text: d.text ?? "", ts: Date.now() }]);
+      },
+      tutor_idle: () => setBusy(false),
       progress_changed: () => refreshProgress(),
       celebrate: () => {
         setCelebrating(true);
@@ -91,6 +98,7 @@ export function App() {
     setSlug(s);
     setTab("lesson");
     setPartial("");
+    setBusy(true);
     api.lesson(s).then(setLesson).catch(() => setLesson(null));
     api.drill(s).then(setDrill).catch(() => setDrill(null));
     api.challenge(s).then(setChallenge).catch(() => setChallenge(null));
@@ -103,6 +111,7 @@ export function App() {
     if (!text) return;
     setTurns((t) => [...t, { kind: "learner", text, ts: Date.now() }]);
     setInput("");
+    setBusy(true);
     api.sendInput(text).catch(() => {});
   }, [input]);
 
@@ -115,6 +124,7 @@ export function App() {
     }
     setTurns([]);
     setPartial("");
+    setBusy(true);
     api.startSession(slug, true).catch(() => {});
   }, [slug]);
 
@@ -232,7 +242,11 @@ export function App() {
 
       <section className="chat">
         <header className="chat-head">
-          <span className="coach-title"><span className="coach-dot" />Coach</span>
+          <span className="coach-title">
+            <span className={`coach-dot${busy ? " busy" : ""}`} />
+            Coach
+            {busy && <span className="thinking-label">thinking…</span>}
+          </span>
           <div className="chat-controls">
             <select
               className="model-select"
@@ -270,6 +284,11 @@ export function App() {
           {partial && (
             <div className="turn tutor streaming">
               <Markdown remarkPlugins={[remarkGfm]}>{partial}</Markdown>
+            </div>
+          )}
+          {busy && !partial && (
+            <div className="turn tutor typing-bubble">
+              <span className="typing"><span /><span /><span /></span>
             </div>
           )}
         </div>
