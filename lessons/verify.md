@@ -1,8 +1,8 @@
-# Module 4 — Verification Loops ⭐
+# Module 3 — Verification Loops ⭐
 
-> **You are here:** this is the spine of the whole course. Every module before it was setup; every
-> module after it loops back here. If you internalize one principle from the AI-Native Gym, make it
-> this one.
+> **You are here:** right after Context — and this is the spine of the whole course, placed early on
+> purpose because every module after it loops back here. If you internalize one principle from the
+> AI-Native Gym, make it this one.
 
 ## Why this matters
 
@@ -50,9 +50,9 @@ is what determines how much autonomy you can safely grant.** Self-sufficient ver
 its own mistakes (`RESEARCH.md`, Pillar 5). No signal → you must review every step → low autonomy.
 Strong signal → the agent self-corrects to green → you review the *result*.
 
-This is why verification is the spine: planning (Module 2) should *name* the verify step, TDD
-(Module 5) is verification taken to its logical extreme (write the signal first), review (Module 6)
-is verification by a fresh pair of eyes, and orchestration (Module 10) is impossible without it
+This is why verification is the spine: planning (Module 4) should *name* the verify step, TDD
+(Module 7) is verification taken to its logical extreme (write the signal first), review (Module 8)
+is verification by a fresh pair of eyes, and orchestration (Module 12) is impossible without it
 because you can't supervise twenty agents by hand. Every one of those loops back to: *what's the
 pass/fail signal?*
 
@@ -118,5 +118,5 @@ job** — and your highest-leverage act is handing the agent a runnable pass/fai
 closes itself. **The one sentence to remember:** *generation is cheap; the executor's job is to make
 "is it right?" a question the agent can answer on its own.*
 
-Next, **Module 5 — TDD with Agents** takes this to its sharpest form: write the signal *first*,
-confirm it fails, then let the agent code to green without touching the tests.
+Next, **Module 4 — Planning & Plan-vs-Act**: now that you know what makes work *checkable*, we decide
+*when* to plan before acting — and every plan you make from here will name its own verify signal.

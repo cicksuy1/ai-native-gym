@@ -1,6 +1,6 @@
-# Module 6 — Reviewing AI Output & Staying the Executor
+# Module 8 — Reviewing AI Output & Staying the Executor
 
-> **You are here:** tests prove behavior (Modules 4–5). But tests can't catch everything — bad
+> **You are here:** tests prove behavior (Modules 3 & 7). But tests can't catch everything — bad
 > abstractions, security holes, "works but wrong." This module is about reviewing with judgment, and
 > keeping *you* in command of the loop.
 
@@ -42,7 +42,7 @@ hoping). The sweet spot: give the agent enough rope to get to ~80%, *then* bring
 the result. And bring it as a reviewer would:
 
 - **Read the diff, not the agent's story.** What changed, not why it says it changed it.
-- **Check what tests can't:** is the abstraction right? any security smell (Module 9's hooks help
+- **Check what tests can't:** is the abstraction right? any security smell (Module 11's hooks help
   here)? does it do *only* what was asked? did it touch files it shouldn't have?
 - **Make every recurring mistake a rule.** When you catch a class of error, write it into CLAUDE.md
   so it doesn't recur — "every mistake becomes a rule" (`RESEARCH.md`, Pillar 5). Your review
@@ -110,5 +110,5 @@ let it run to ~80% then judge, and feed recurring mistakes back as rules. **The 
 remember:** *green tests aren't a merge button — review the diff with fresh eyes and keep your hand
 on the wheel.*
 
-Next, **Module 7 — Subagent Delegation**: that fresh-context reviewer was your first subagent. Now
+Next, **Module 9 — Subagent Delegation**: that fresh-context reviewer was your first subagent. Now
 we learn to delegate side-work properly — with an objective, a format, tools, and boundaries.

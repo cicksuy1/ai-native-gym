@@ -1,4 +1,4 @@
-# Module 9 — Skills, Hooks & MCP
+# Module 11 — Skills, Hooks & MCP
 
 > **You are here:** you can drive, delegate, and parallelize the harness. Now we *extend* it — three
 > mechanisms to teach it new workflows, automate it deterministically, and connect it to the outside
@@ -32,7 +32,7 @@ reach for.
 
 **Skills — reusable workflows, loaded on demand.** A skill teaches the agent how to do a task, via
 **progressive disclosure**: only its name + description (~30–50 tokens) sit in context until it's
-invoked, then the full body loads (`RESEARCH.md`, Pillars 3 & 5). That's the Module 1 principle made
+invoked, then the full body loads (`RESEARCH.md`, Pillars 3 & 5). That's the Module 2 principle made
 concrete — sometimes-relevant knowledge lives in a skill, not in always-on CLAUDE.md. Reach for a
 skill when you have a *workflow* you repeat and want the agent to follow when relevant.
 
@@ -41,7 +41,7 @@ skill when you have a *workflow* you repeat and want the agent to follow when re
 — "anything that should happen deterministically: running linters after edits, posting to Slack on
 completion." Crucially: to **hard-block** an action *regardless of what the model decides*, a
 **PreToolUse hook is the recommended mechanism** — not a CLAUDE.md rule (`RESEARCH.md`, Pillars 3 &
-5). This is the punchline of Module 1's "memory is context, not enforcement": if you need a
+5). This is the punchline of Module 2's "memory is context, not enforcement": if you need a
 *guarantee*, you need a hook.
 
 **MCP — external state, at a cost.** MCP is a standard protocol giving the agent access to external
@@ -88,7 +88,7 @@ Result: the agent commits without tests anyway (CLAUDE.md is context, not
 ```
 
 The guarantee was written as a probabilistic hope (should've been a hook), the CLAUDE.md was bloated
-(Module 1), and MCP servers were added without counting their context rent. Three mechanism
+(Module 2), and MCP servers were added without counting their context rent. Three mechanism
 mismatches in one setup.
 
 ## 🧠 Active recall
@@ -115,5 +115,5 @@ workflows (cheap, on-demand), hooks for deterministic guarantees, MCP for extern
 context cost). **The one sentence to remember:** *if you need a guarantee, write a hook — a CLAUDE.md
 rule is only a hope.*
 
-Next, the finale — **Module 10 — Orchestration at Scale & Knowing When *Not* To**: putting it all
+Next, the finale — **Module 12 — Orchestration at Scale & Knowing When *Not* To**: putting it all
 together across many agents, and the judgment to *not* when the task doesn't earn it.

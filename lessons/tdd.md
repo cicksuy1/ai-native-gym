@@ -1,11 +1,12 @@
-# Module 5 — TDD with Agents
+# Module 7 — TDD with Agents
 
-> **You are here:** you know verification is the spine (Module 4). TDD is verification taken to its
-> sharpest edge — you write the pass/fail signal *first*, then let the agent code to green.
+> **You are here:** verification is the spine (Module 3), and you've already shipped a feature that
+> closed its loop (Module 6). TDD is verification taken to its sharpest edge — you write the pass/fail
+> signal *first*, then let the agent code to green.
 
 ## Why this matters
 
-In Module 4 you learned to hand the agent a runnable signal. TDD asks: what if the signal comes
+In Module 3 you learned to hand the agent a runnable signal. TDD asks: what if the signal comes
 *before* the code even exists? That flips the agent's whole loop. Instead of "write code, then maybe
 check it," the agent has a concrete, failing target from the first second — and it can run, read the
 failure, fix, and rerun until green, **autonomously**.
@@ -17,7 +18,7 @@ own without going off the rails.
 
 ## The big idea: the test is the spec the agent can run
 
-A spec (Module 3) is a contract the agent reads. A *test* is a contract the agent can **execute** —
+A spec (Module 5) is a contract the agent reads. A *test* is a contract the agent can **execute** —
 it fails loudly and specifically until the behavior is right. That's the magic: a failing test turns
 "is this correct?" from a judgment call into a command that exits non-zero. The agent doesn't need
 your eyes mid-loop; it has the test's verdict.
@@ -99,7 +100,7 @@ No peeking:
 Find the TDD passage in "How Anthropic teams use Claude Code" and the practitioner write-up cited in
 `RESEARCH.md`, Pillar 5 ("confirm they fail, commit the tests, then write code to pass without
 modifying the tests"). Notice it's framed as enabling *longer autonomous runs* — connect that to
-Module 4's principle that a stronger signal buys more safe autonomy.
+Module 3's principle that a stronger signal buys more safe autonomy.
 
 ## What you learned + what's next
 
@@ -107,5 +108,5 @@ You can now drive agent-TDD: tests first, confirm red, commit, code to green, te
 tightest verify loop there is. **The one sentence to remember:** *write the failing test first, watch
 it fail, and never let the agent move the goalposts.*
 
-Next, **Module 6 — Reviewing AI Output & Staying the Executor**: TDD proves behavior; review with
+Next, **Module 8 — Reviewing AI Output & Staying the Executor**: TDD proves behavior; review with
 fresh eyes catches everything a test can't, and keeps you in command.

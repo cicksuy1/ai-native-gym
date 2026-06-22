@@ -1,11 +1,11 @@
-# Module 7 — Subagent Delegation
+# Module 9 — Subagent Delegation
 
-> **You are here:** you met your first subagent as a fresh-context reviewer (Module 6). Now we learn
+> **You are here:** you met your first subagent as a fresh-context reviewer (Module 8). Now we learn
 > to delegate side-work *properly* — so it offloads from your main context instead of polluting it.
 
 ## Why this matters
 
-Your main conversation is precious, finite context (Module 1). Every search result, log dump, and
+Your main conversation is precious, finite context (Module 2). Every search result, log dump, and
 file you pull into it raises the noise floor. Subagents are the escape hatch: *"delegated workers
 inside one session that do a side task in their own context and return a summary"* (`RESEARCH.md`,
 Pillar 4). The investigation happens somewhere else, and only the *conclusion* comes back.
@@ -112,5 +112,5 @@ boundaries — and get back a destination, not a journey, keeping your main cont
 sentence to remember:** *delegate when you need the answer but not the mess, and always scope the
 brief.*
 
-Next, **Module 8 — Parallelism & Isolation**: one subagent is delegation; *many* working at once
+Next, **Module 10 — Parallelism & Isolation**: one subagent is delegation; *many* working at once
 needs isolation. We'll meet git worktrees — the safe-parallelism primitive.

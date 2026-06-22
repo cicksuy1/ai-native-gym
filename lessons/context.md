@@ -1,6 +1,7 @@
-# Module 1 — Context Management
+# Module 2 — Context Management
 
-> **You are here:** you can steer the harness loop (Module 0). Now we tackle the constraint that sits
+> **You are here:** you can operate the harness (Module 0) and you've driven one task end-to-end
+> (Module 1). Now we tackle the constraint that sits
 > underneath almost every other best practice in this course: the context window, and how to feed it
 > the *right* tokens rather than the most.
 
@@ -114,5 +115,6 @@ You now treat the context window as a desk to keep clear, you reach for `/clear`
 tasks and `/compact <focus>` to steer a summary, and you know why CLAUDE.md stays lean. **The one
 sentence to remember:** *the right tokens, not the most — and `/clear` is free.*
 
-Next, **Module 2 — Planning & Plan-vs-Act**: now that you can keep the agent's context clean, we'll
-decide when to make it plan before acting — and when planning is just ceremony.
+Next, **Module 3 — Verification Loops** ⭐: the spine of the course. Now that you can keep the agent's
+context clean, we make its work *checkable* — handing it a runnable pass/fail signal so the loop
+closes itself. It's the one idea every later module leans on.

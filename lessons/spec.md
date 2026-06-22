@@ -1,6 +1,6 @@
-# Module 3 — Spec-Driven Development
+# Module 5 — Spec-Driven Development
 
-> **You are here:** you can plan before acting (Module 2). Now we handle the work that's too big even
+> **You are here:** you can plan before acting (Module 4). Now we handle the work that's too big even
 > for a plan — where you stop handing the agent a *wish* and start handing it a *contract*.
 
 ## Why this matters
@@ -38,7 +38,7 @@ Multiple sources converge on a **four-phase, human-gated** shape — GitHub Spec
 > the implicit requirements, write a self-contained **`SPEC.md`**, then **start a fresh session to
 > execute the spec with clean context** (`RESEARCH.md`, Pillar 2).
 
-Notice the context-management move baked in (Module 1): you *interview-then-execute-in-a-fresh-
+Notice the context-management move baked in (Module 2): you *interview-then-execute-in-a-fresh-
 session*, so the implementation starts with a clean window holding only the finished contract — not
 the messy back-and-forth that produced it.
 
@@ -53,7 +53,7 @@ Two craft rules make specs actually work:
 
 And know when *not* to: full upfront specs are "probably overkill" for small improvements but should
 be the **default for larger or multi-developer projects** (`RESEARCH.md`, Pillar 2). SDD is the top
-of the plan-vs-act dial from Module 2, not a replacement for it.
+of the plan-vs-act dial from Module 4, not a replacement for it.
 
 ## Watch it done well
 
@@ -103,7 +103,7 @@ No peeking:
 
 1. In one line: what's the difference between a "wish" and a "contract" for an agent?
 2. Describe Anthropic's interview → SPEC.md → fresh-session workflow — and why the *fresh session*
-   matters (tie it to Module 1).
+   matters (tie it to Module 2).
 3. What are the three tiers of "graduated boundaries," and why beat a flat list of don'ts?
 
 ## 🔍 In the wild
@@ -119,5 +119,6 @@ You can now tell when a task has outgrown a plan and needs a contract, run an in
 fresh-session loop, and write graduated boundaries instead of rule-walls. **The one sentence to
 remember:** *hand the agent a contract, not a wish — and do your senior thinking in the spec.*
 
-Next, **Module 4 — Verification Loops**: the spine of the course. A good spec already names how the
-work will be checked; Module 4 makes that check *runnable* so the loop closes itself.
+Next, **Module 6 — Project: Ship a Feature**: time to put Part II together. You'll plan a real
+multi-file feature, keep its context tight, and close the verify loop you learned in Module 3 — your
+first end-to-end integration of everything so far.

@@ -1,6 +1,6 @@
-# Module 8 — Parallelism & Isolation
+# Module 10 — Parallelism & Isolation
 
-> **You are here:** you can delegate one side-task cleanly (Module 7). Now we run *many* agents at
+> **You are here:** you can delegate one side-task cleanly (Module 9). Now we run *many* agents at
 > once — which only works if they can't trip over each other. The primitive that makes it safe is the
 > git worktree.
 
@@ -118,5 +118,5 @@ You now isolate with git worktrees before you parallelize, you know Claude Code'
 wants one session. **The one sentence to remember:** *isolate first with worktrees, and only
 parallelize work that's actually independent.*
 
-Next, **Module 9 — Skills, Hooks & MCP**: the three ways to *extend* the harness — reusable
+Next, **Module 11 — Skills, Hooks & MCP**: the three ways to *extend* the harness — reusable
 workflows, deterministic automation, and external state — and the context cost of each.

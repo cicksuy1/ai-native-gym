@@ -1,8 +1,8 @@
-# Module 2 — Planning & Plan-vs-Act
+# Module 4 — Planning & Plan-vs-Act
 
-> **You are here:** you can steer the harness loop (Module 0) and feed it the right context
-> (Module 1). Now we add the highest-leverage habit in the whole course after verification: deciding
-> *whether to plan*, and planning well when you should.
+> **You are here:** you can operate the harness (Module 0), keep its context tight (Module 2), and
+> close a verify loop (Module 3). Now we add the next habit: deciding *whether to plan*, and planning
+> well when you should — and every plan you make will name the verify signal you just learned.
 
 ## Why this matters
 
@@ -39,7 +39,7 @@ Skip planning for typos, log lines, renames — small, self-contained changes wh
 is genuinely fine. **Plan** when you're uncertain about the approach, when the change spans multiple
 files, or when you're unfamiliar with the code (`RESEARCH.md`, Pillar 2). Full upfront specs are
 overkill for small improvements but should be the default for larger, multi-developer work — that's
-Module 3's territory.
+Module 5's territory.
 
 Think of it as a dial, not a switch:
 
@@ -47,7 +47,7 @@ Think of it as a dial, not a switch:
 |---|---|
 | One-sentence diff, you know exactly where it goes | **Skip the plan** — just do it |
 | Spans several files, or you're unsure of the approach | **Plan first** — explore read-only, get a plan, approve it |
-| Large / multi-session / shared codebase | **Spec it** (Module 3) |
+| Large / multi-session / shared codebase | **Spec it** (Module 5) |
 
 The wrong move in *either* direction costs you: skipping a plan on a tangled change buys a wrong-
 problem mess; planning a trivial change buys wasted turns. Calling it right *is* the skill.
@@ -114,5 +114,5 @@ You can now run Explore → Plan → Code → Commit, and — more importantly �
 earns a plan and when it doesn't. **The one sentence to remember:** *make the agent plan before it
 acts on anything you couldn't describe in a single sentence.*
 
-Next, **Module 3 — Spec-Driven Development**: when a task is too big even for a plan, you hand the
+Next, **Module 5 — Spec-Driven Development**: when a task is too big even for a plan, you hand the
 agent a *contract* instead of a wish. That's where planning grows up.
