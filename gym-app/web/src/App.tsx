@@ -75,7 +75,11 @@ export function App() {
         setPartial((p) => p + (d.text ?? ""));
       },
       tutor_message: (d) => {
+        // A completed assistant turn is the reliable "done" signal in streaming
+        // mode (the SDK's `result`/tutor_idle only fires at conversation end).
+        // If the coach keeps working (tool calls), tool_activity re-arms busy.
         setPartial("");
+        setBusy(false);
         setTurns((t) => [...t, { kind: "tutor", text: d.text ?? "", ts: Date.now() }]);
       },
       tool_activity: (d) => {
