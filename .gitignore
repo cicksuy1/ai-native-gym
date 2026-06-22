@@ -1,0 +1,16 @@
+# Learner-private state — never leaves the machine
+progress/*.local.md
+gym-app/.session.json
+gym-app/.chats/
+
+# Dependencies / build
+node_modules/
+gym-app/**/node_modules/
+gym-app/web/dist/
+*.log
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
