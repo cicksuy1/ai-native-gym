@@ -3,6 +3,9 @@ progress/*.local.md
 gym-app/.session.json
 gym-app/.chats/
 
+# Stray local captures
+screenshots/
+
 # Dependencies / build
 node_modules/
 gym-app/**/node_modules/
