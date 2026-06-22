@@ -1,119 +1,183 @@
-# Module 0 — Setup & Harness Fluency
+# Module 0 — Getting Started & Harness Fluency
 
-> **You are here:** the very first rep. By the end of this page you'll know what the *harness* is,
-> why it — not the model — is what you're actually driving, and how to switch its modes on purpose
-> instead of by accident.
+> **You are here:** the very first module. This one is **hands-on** — by the end you won't just *know*
+> what the harness is, you'll have operated its controls: switched every mode on purpose, inspected
+> the tool surface the agent acts through, and found where its settings live. Fluency, not theory.
 
 ## Why this matters
 
-Here's a thing that trips up sharp engineers when they start driving an AI coding agent: they think
-they're talking to "the model." They're not. They're operating a **harness** — a loop of software
-wrapped around the model that gathers context, takes actions with real tools, and checks the
-results. The model is the engine; the harness is the whole car. You can be brilliant at prompting
-and still crash, because you never learned where the gears are.
+Sharp engineers trip on the same thing when they start driving an AI coding agent: they think they're
+talking to "the model." They're not. They're operating a **harness** — a loop of software wrapped
+around the model that gathers context, takes actions through real tools, and checks results. The
+model is the engine; the harness is the whole car, with a gearbox, pedals, and dashboard you control.
+You can be brilliant at prompting and still crash, because you never learned where the controls are.
 
-So we start here. Not with clever prompts — with the machine you're sitting in. Get fluent with the
-harness and everything else in this course gets easier, because every later principle (planning,
-context, verification) is really just *a way of driving this loop well*.
+So we start at the controls. This module isn't a syllabus for the rest of the course — it's the one
+where you learn to *operate the machine* you'll drive for the next twelve modules. Everything else
+(planning, context, verification) is a way of driving this loop well; here we learn the loop's
+actual knobs.
 
-## The big idea: the agent is a loop, and you steer it
+## The big idea: the agent is a loop, and the controls are yours
 
-Anthropic describes Claude Code in exactly these terms: it "serves as the agentic harness around
+Anthropic defines Claude Code in exactly these terms: it "serves as the agentic harness around
 Claude... the tools, context management, and execution environment that turn a language model into a
 capable coding agent," running a three-phase loop — **gather context → take action → verify
-results** (`RESEARCH.md`, Pillar 1). Read that loop again, because it's the spine of the whole
-course:
+results** (`RESEARCH.md`, Pillar 1).
 
-1. **Gather context** — the agent reads files, runs searches, pulls in what it needs to understand.
-2. **Take action** — it edits files, runs commands, calls tools.
-3. **Verify results** — it checks whether the action worked, and loops back if not.
+```
+        ┌─────────────────────────────────────────────┐
+        │                                               ▼
+   gather context  ───►  take action  ───►  verify results
+   (read, search)       (edit, run,         (test, build,
+                         call tools)          read output) ──► done? ──► loop
+```
 
-Your job as the executor is to *shape each phase*: feed the right context (Module 1), decide whether
-to plan first (Module 2), and make sure step 3 has a real signal to check against (Module 4). For
-now, just hold the loop in your head. Everything hangs off it.
+Every turn the agent runs this loop. Three knobs decide *how* it runs, and all three are yours:
 
-## The principle: modes are your gearbox
+- **Permission mode** — how far it may act before stopping to ask you (the gearbox).
+- **The tool surface** — *what* actions it can take at all (the pedals and levers).
+- **Settings & memory** — the standing defaults that shape every loop (the car's configuration).
 
-The single most practical lever on the harness is the **permission mode** — how much the agent can
-do before it stops to ask you. There's a wrinkle worth knowing up front, because it's a great lesson
-in *knowing your version*: Anthropic's docs describe this two different ways. One page lists **four**
-modes you cycle with Shift+Tab; the dedicated permission-modes reference lists **six**
-(`RESEARCH.md`, Pillar 1). Don't memorize a number — learn the *shape*:
+We'll operate all three, in that order.
 
-| Mode | What the agent may do | When you'd pick it |
+## Control 1: permission modes — the gearbox
+
+The permission mode is how much the agent does before it stops for your approval. Here's a wrinkle
+worth meeting on day one, because it *is* the lesson: Anthropic's docs describe modes **two different
+ways** — one page lists **four** modes cycled with Shift+Tab; the dedicated permission-modes
+reference lists **six** (`RESEARCH.md`, Pillar 1). Don't memorize a count — learn the spectrum, from
+tightest leash to loosest:
+
+| Mode | What the agent may do | When you reach for it |
 |---|---|---|
-| **default** | reads freely; **asks** before edits/commands | normal work — you stay in the loop on every change |
-| **plan** | reads and explores only — **cannot edit** | thinking through an approach before touching code (Module 2) |
-| **acceptEdits** | reads + makes file edits + common fs commands without asking | a well-scoped change you've already reasoned about |
-| **auto** *(preview)* | nearly everything, with background safety checks | longer autonomous runs you're supervising |
+| **`plan`** | read & explore only — **cannot edit** | thinking through an approach before any change (Module 4) |
+| **`default`** | reads freely; **asks** before each edit / command | normal work — you stay in the loop on every change |
+| **`acceptEdits`** | reads + edits + common filesystem commands, no asking | a well-scoped change you've already reasoned about |
+| **`auto`** *(preview)* | nearly everything, with background safety checks | longer autonomous runs you're *supervising* |
+| **`dontAsk`** | only pre-approved tools, nothing else | locked-down CI / non-interactive runs |
+| **`bypassPermissions`** | everything, no checks | **isolated containers/VMs only** — never your real machine |
 
-In the CLI, **Shift+Tab cycles default → acceptEdits → plan**; you can also launch with
-`--permission-mode` or set a `defaultMode` in `settings.json` (`RESEARCH.md`, Pillar 1). The reason
-this is the first thing to master: picking the mode is you deciding *how tight to hold the leash* —
-and that decision, made deliberately, is most of what "driving well" means.
+In the CLI, **Shift+Tab cycles `default → acceptEdits → plan`** (the three you'll live in). You can
+also launch with `--permission-mode <name>`, or set a persistent `defaultMode` in `settings.json`. In
+VS Code, Desktop, and web, a selector replaces the keypress (`RESEARCH.md`, Pillar 1). Picking the
+mode is you deciding *how tight to hold the leash* — and making that choice deliberately, per task, is
+most of what "driving well" means.
 
-> **Note:** `auto` mode is a seatbelt, not a chauffeur. It's a guardrailed middle ground (built
-> because users approve ~93% of prompts anyway), but on 52 real overeager actions its safety pipeline
-> still had a **17% false-negative rate** (`RESEARCH.md`, Pillar 1). Use it to work faster while
-> *supervising* — never as permission to stop watching. And `bypassPermissions` is for isolated
-> containers/VMs only.
+> **▶ Do this now (Rep A).** Open a real Claude Code session and press **Shift+Tab** slowly three
+> times, watching the mode indicator. Say out loud the order it cycles and one thing the agent
+> *cannot* do in `plan`. That reflex — knowing your current gear without looking — is the foundation.
+
+### Auto mode is a seatbelt, not a chauffeur
+
+`auto` mode deserves a closer look because it's the one people misuse. It's a research preview
+(v2.1.83+) built as "a middle ground between manual review and no guardrails," motivated by a real
+finding: in `default` mode, users approve **93%** of permission prompts anyway (`RESEARCH.md`,
+Pillar 1). So auto mode tries to skip the rubber-stamping *safely*, with a **two-layer defense**:
+
+1. **Input layer** — a server-side prompt-injection probe scans tool *outputs* before they enter the
+   agent's context (catching "ignore your instructions" payloads hidden in files/web pages).
+2. **Output layer** — a transcript classifier (running on Sonnet 4.6) evaluates each action *before*
+   it executes.
+
+Actions are **tiered**: Tier-1 (read-only / safelisted) and Tier-2 (in-project file edits) proceed
+without review; only **Tier-3** (shell commands, external tools, out-of-project filesystem writes)
+reach the classifier. It pauses and re-prompts you after 3 consecutive or 20 total blocks
+(`RESEARCH.md`, Pillar 1).
+
+Here's the number that keeps you honest: on 52 real overeager actions, that full pipeline still had a
+**17% false-negative rate** (`RESEARCH.md`, Pillar 1). So auto mode lets you work faster *while
+supervising* — it is never permission to stop watching. And `bypassPermissions` removes the
+guardrails entirely: reserve it for throwaway containers/VMs, never your real repo.
+
+> **Note:** for subagents (Module 9), the classifier checks at three points — before spawn, during
+> each action, at finish — and any `permissionMode` set in a subagent's own frontmatter is **ignored**
+> (`RESEARCH.md`, Pillar 1). The orchestrator's policy wins.
+
+## Control 2: the tool surface — the pedals and levers
+
+The agent never touches your machine directly; it acts through **tools** (Read, Edit, Bash, Glob,
+Grep, Skill, …). Anthropic frames a tool as "a new kind of software which reflects a contract between
+deterministic systems and non-deterministic agents" — designed to anticipate unpredictable or even
+hallucinated calls (`RESEARCH.md`, Pillar 1). That contract framing matters to you as a driver:
+**the set of tools available, and what each returns, shapes what the agent can and will do.**
+
+Two properties of a *good* tool surface are worth knowing now, because they recur all course:
+
+- **High-signal returns, not high-volume.** Agent context is scarce (Module 2's whole subject), so
+  well-built tools return *filtered* information, not raw dumps. A tool that returns 500 lines of log
+  poisons the loop; one that returns the 3 relevant lines sharpens it.
+- **Consolidation and namespacing.** Good surfaces collapse many fiddly operations into one
+  meaningful action (a single `schedule_event` rather than ten calls) and namespace related tools
+  (`asana_search`) so the agent can tell boundaries apart (`RESEARCH.md`, Pillar 1).
+
+You don't build tools yet — but you *read* the surface, because it tells you what the agent is even
+capable of this session, and a bloated surface is a real cost (you'll meet that sharply with MCP in
+Module 11).
+
+> **▶ Do this now (Rep B).** In `plan` mode, ask your agent: *"List the tools you currently have
+> available and one line on what each does."* Read the surface. Notice which are read-only (safe to
+> let run) vs. which act on the world (Bash, Edit). You just inventoried your pedals.
+
+## Control 3: settings & memory — the standing configuration
+
+Modes and tools are per-session; **settings** are the defaults that shape *every* session. The one to
+know on day zero is `settings.json` (`defaultMode`, allowed tools, env), which sits alongside the
+memory file `CLAUDE.md` that loads at the start of every conversation. We go deep on memory in
+Module 2 — for now, all you need is: *there is a file that configures your harness, and you should
+know where it lives.*
+
+> **▶ Do this now (Rep C).** Locate your settings: check for a project `.claude/settings.json` and
+> your user `~/.claude/settings.json`. Open one and find (or imagine adding) `defaultMode`. You've now
+> seen where the car's configuration lives — we'll tune it in later modules.
 
 ## Watch it done well
 
-*Transcript 0-1: a developer starts a small task by choosing the gear first, not by firing a prompt.*
+*Transcript 0-1: a developer chooses the gear first, reads the surface, then acts deliberately.*
 
 ```
-You:    [presses Shift+Tab until the mode reads "plan"]
-        How does our auth middleware decide which routes are public?
-
-Claude: [reads router.ts, auth.ts, the middleware config — makes no edits]
-        Public routes are whitelisted in PUBLIC_PATHS in auth.ts:12; everything
-        else hits requireSession(). Here's the flow… [summary]
-
-You:    Good. [Shift+Tab back to default] Add /health to the public list.
-
+You:    [Shift+Tab → plan]  How does our auth middleware decide which routes are public?
+Claude: [reads router.ts, auth.ts — makes no edits]
+        Public routes are whitelisted in PUBLIC_PATHS (auth.ts:12); everything else
+        hits requireSession(). [summary]
+You:    Good. [Shift+Tab → default]  Add /health to the public list.
 Claude: [proposes a one-line edit to PUBLIC_PATHS, waits for approval]
+You:    [reads the one-line diff] Approved.
 ```
 
-Notice what happened: they entered **plan** mode to explore safely (no accidental edits while just
-asking a question), got their bearings, then dropped back to **default** for a deliberate, reviewable
-change. The mode was a *choice*, matched to the phase of work.
+They entered `plan` to explore with zero edit-risk, dropped to `default` for one reviewable change,
+and approved knowingly. The mode was a *choice*, matched to the phase of work.
 
-*Anti-pattern 0-2: the same task, driven blind.*
+*Anti-pattern 0-2: same task, driven blind.*
 
 ```
 You:    fix the auth thing so health checks work   [in acceptEdits, no exploration]
-
 Claude: [edits auth.ts, middleware.ts, and a config file — all auto-accepted]
-You:    wait, what did you just change?
+You:    wait — what did you just change?
 ```
 
-Same goal, but the leash was loose *and* there was no gather-context phase. The agent acted across
-three files before the human understood the problem. That's not the model failing — that's the
-harness being driven in the wrong gear.
+Loose leash *and* no gather-context phase: the agent acted across three files before the human
+understood the problem. Not the model failing — the harness driven in the wrong gear.
 
 ## 🧠 Active recall
 
-No peeking — answer these out loud or in writing:
+No peeking:
 
-1. What are the three phases of the harness loop, in order?
-2. You want to ask the agent a question about unfamiliar code *without any risk* of it editing
-   anything. Which mode do you switch to, and how?
-3. Why is "auto mode is enabled" **not** the same as "I can stop reviewing"?
+1. Name the three phases of the harness loop, in order — and the three controls *you* hold over it.
+2. You want to ask about unfamiliar code with **zero** risk of an edit. Which mode, and how do you get there?
+3. Auto mode has a 17% false-negative rate on overeager actions. In one sentence: what does that mean for how you use it?
 
 ## 🔍 In the wild
 
-Open the real Claude Code docs page **"How Claude Code works"** (cited in `RESEARCH.md`, Pillar 1).
-Find the gather → act → verify description in Anthropic's own words, then open the permission-modes
-reference and count how many modes *your* version exposes. You just did the "know your version" check
-that this lesson is really about — the docs are the source of truth, not any single tutorial.
+Open the real **"How Claude Code works"** and **permission-modes** docs (cited in `RESEARCH.md`,
+Pillar 1). Find the gather → act → verify description in Anthropic's words, then count how many modes
+*your* version exposes (four? six?). You just did the "know your version" check this module is really
+about — the docs are the source of truth, not any single tutorial.
 
 ## What you learned + what's next
 
-You can now name the harness loop, you know modes are your gearbox, and you've switched them on
-purpose. **The one sentence to remember:** *you're not prompting a model, you're driving a loop —
-and choosing the gear is most of the job.*
+You can now operate the harness: name the loop, hold its three controls, switch every mode on purpose,
+read the tool surface, and find your settings. **The one sentence to remember:** *you're not prompting
+a model, you're operating a loop — and the gearbox, the pedals, and the configuration are all yours.*
 
-Next up, **Module 1 — Context Management**: now that you can steer the loop, we'll make sure it's
-fed the *right* tokens, not the most. That's the constraint behind almost every other best practice
-in this course.
+Next up, **Module 1 — Your First Drive**: you'll take one real task through the entire loop end to
+end, so you've felt the whole arc *once* before we slow down and master each piece.
