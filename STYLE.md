@@ -72,6 +72,46 @@ to a definition.
 - **"Real code in the wild = stdlib."** Our **🔍 In the wild** sections point at real
   **Anthropic / Claude Code docs and practices** instead (cite `RESEARCH.md`).
 
+> **Reclaim — we drop Rust's language *content*, not its *structure*.** An earlier version of this
+> guide threw the structural baby out with the language-feature bathwater. We keep Rust's
+> **architecture**: start by *doing*, give the whole arc in an **early end-to-end exemplar** (the
+> "Guessing Game"), let each concept chapter **own one idea deeply**, and **integrate with projects**
+> — not just a final capstone. That architecture lives in the lesson types below and in
+> `CURRICULUM.md`.
+
+---
+
+## Lesson types — not every lesson has the same shape
+
+The Rust Book doesn't force one template on every chapter: *Getting Started*, the *Guessing Game*
+project, *Common Concepts*, and *Ownership* each have a different shape fitted to their job. We do the
+same. A lesson declares its **type** in `CURRICULUM.md`, and the type sets its anatomy. The voice
+(everything under KEEP) is identical across all four — only the structure differs.
+
+**1. Orientation** — *e.g. M0 `harness`.* Get the learner *operating the machine*, hands-on.
+Anatomy: Hook → the mental model (one diagram-in-words) → **the control surface in depth** (the
+actual knobs they operate) → **do-this-now reps inline** → cold recall → what's next.
+*Rule:* this is the most hands-on lesson in the course, **not** the most abstract — and it **owns its
+idea**; it does not forward-defer its substance to later modules.
+
+**2. First-Drive / Exemplar** — *e.g. M1 `first-drive`.* Show the **whole arc in miniature** before
+any single piece is taught deeply — the "Guessing Game." Anatomy: the task → drive it **phase by
+phase**, each a short beat that **forward-links** to the deep module that owns it ("we go deep on
+this in Module N") → a contrasting *driven-badly* pass → "what you just saw" (the arc named) → recall
+about the **arc**, not the pieces. *Rule:* breadth over depth is correct here, and the forward-links
+are the point — this is the **one** lesson type that legitimately defers depth.
+
+**3. Principle** — *most modules.* Teach one idea deeply. Anatomy: the seven beats — Hook → big idea
+→ principle & mechanics → worked transcript + anti-pattern → 🧠 recall → 🔍 in the wild → recap.
+*Rule:* a Principle lesson **owns its idea** — it must not hand its core substance to a later module.
+Forward-links are for genuinely separate topics, never for "the real explanation is in Module N."
+
+**4. Integration / Project** — *e.g. M6 `ship-feature`, M12 `orchestrate` capstone.* Force the
+learner to combine **≥ 3 principles** on one realistic task. Anatomy: a short framing of what's being
+integrated and why now → the mission (mostly in `exercises/<slug>/challenge/`) → a scorecard that
+**spans the integrated principles** → reflection. *Rule:* less reading, more doing; a project may
+skip the separate practice drill (the mission *is* the rep).
+
 ---
 
 ## Quick checklist before a lesson ships
@@ -79,6 +119,8 @@ to a definition.
 - [ ] Opens with *why this matters*, not mechanics.
 - [ ] Has at least one captioned **transcript** of the workflow done well + a contrasting anti-pattern.
 - [ ] Says "you"/"we'll"; reads like a peer, not a manual.
-- [ ] Defers depth explicitly with a forward-link instead of dumping everything.
+- [ ] **Matches its declared lesson type's anatomy** (Orientation / Exemplar / Principle / Project).
+- [ ] **Owns its idea** — unless it's an Exemplar, it does *not* defer its core substance to a later
+      module. (Forward-links are for separate topics, or the whole point in an Exemplar.)
 - [ ] Ends with a recap + the one sentence to remember + what's next.
 - [ ] Claims are grounded in `RESEARCH.md` (link the source).
