@@ -56,16 +56,22 @@ function parseCompleted(text: string): CompletedRow[] {
 
 /** The "Started:" value is empty when it's still the template comment placeholder. */
 function parseStarted(text: string): string {
-  const raw = matchOne(text, /\*\*Started:\*\*\s*([^\n]*)/);
+  // [ \t]* (not \s*) so a now-empty value can't swallow the next line.
+  const raw = matchOne(text, /\*\*Started:\*\*[ \t]*([^\n]*)/);
   if (!raw || raw.startsWith("<!--")) return "";
   // Strip a trailing inline comment if present.
   return raw.replace(/<!--.*$/, "").trim();
 }
 
+/** Strip HTML comments so example/template rows inside them aren't parsed as real. */
+function stripComments(text: string): string {
+  return text.replace(/<!--[\s\S]*?-->/g, "");
+}
+
 /** Read and parse the learner's progress (copies the template on first read). */
 export function readProgress(): Progress {
   ensureLocal();
-  const text = readRepoFile(LOCAL_REL);
+  const text = stripComments(readRepoFile(LOCAL_REL));
   return {
     current: matchOne(text, /\*\*Current module:\*\*\s*`([^`]+)`/),
     started: parseStarted(text),

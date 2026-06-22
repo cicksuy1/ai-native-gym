@@ -33,7 +33,9 @@ All file IO is explicit UTF-8. `:slug` params MUST be validated against the curr
     session if one exists**, fresh otherwise;
   - `"fresh": true` → discard `slug`'s recorded session id and start anew (the "Restart conversation"
     button). The chat log stays readable.
-- On boot the server warms only the `current` module's conversation (if recorded).
+- On boot the server does **not** auto-start any conversation (resuming costs tokens; a restart must
+  never silently spend). Set `GYM_WARM_ON_BOOT=1` to warm the `current` module's conversation on boot
+  if it has a recorded session. Otherwise the first `POST /session/start` kicks things off.
 - `gym-app/.session.json` (gitignored):
   `{ "current": "harness", "model": "sonnet", "sessions": { "harness": "…", "verify": "…" } }`.
   Each SDK resume forks a new session id — the map entry refreshes on every `system/init`.

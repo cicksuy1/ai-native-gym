@@ -13,6 +13,8 @@ import { readFile, writeFile } from "node:fs/promises";
 import { repoRoot } from "./files.ts";
 import { appendTurn } from "./chatlog.ts";
 import { evaluateToolUse } from "./permissions.ts";
+// Type-only import — erased at compile time, so the SDK stays lazily loaded.
+import type { SDKUserMessage } from "@anthropic-ai/claude-agent-sdk";
 
 const HEARTBEAT_MS = 25_000;
 const MAX_TURNS = 200;
@@ -269,7 +271,10 @@ function initConversation(slug: string, { fresh }: { fresh: boolean }): Host {
     if (canResume && recorded) options.resume = recorded;
 
     try {
-      const runner = query({ prompt: queue.generator() as AsyncIterable<unknown>, options });
+      const runner = query({
+        prompt: queue.generator() as AsyncGenerator<SDKUserMessage>,
+        options,
+      });
       h.runner = runner as Host["runner"];
       for await (const msg of runner as AsyncIterable<Record<string, unknown>>) {
         handleMessage(msg, startedFresh);

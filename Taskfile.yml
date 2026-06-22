@@ -1,0 +1,36 @@
+# AI-Native Gym — ops tasks (Bun-based). Install go-task (https://taskfile.dev) to
+# use these, or run the underlying `bun` commands directly from gym-app/.
+version: "3"
+
+tasks:
+  setup:
+    desc: Install gym-app dependencies (requires Bun — https://bun.sh)
+    dir: gym-app
+    cmds:
+      - bun --version || (echo "Bun is required: https://bun.sh" && exit 1)
+      - bun install
+
+  test:
+    desc: Run the server test suite (bun test)
+    dir: gym-app
+    cmds:
+      - bun test server/
+
+  app:
+    desc: Build the web client and run the gym server on :4600
+    dir: gym-app
+    cmds:
+      - bun run build:web
+      - bun run app
+
+  dev:
+    desc: Run server (:4600) and Vite dev client (:4601) for live development
+    dir: gym-app
+    cmds:
+      - echo "Run 'bun run dev:server' and 'bun run dev:web' in two terminals."
+
+  typecheck:
+    desc: Type-check the gym-app
+    dir: gym-app
+    cmds:
+      - bun run typecheck

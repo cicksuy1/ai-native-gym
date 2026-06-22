@@ -1,0 +1,108 @@
+// Thin REST + SSE client for the gym-app API. Every REST response uses the
+// { success, data, error } envelope; unwrap() returns data or throws.
+
+export interface Module {
+  number: number;
+  title: string;
+  slug: string;
+  principle: string;
+  written: boolean;
+  hasExercise: boolean;
+  isSpine: boolean;
+}
+
+export interface CompletedRow {
+  number: number;
+  module: string;
+  passedOn: string;
+  scorecard: string;
+}
+
+export interface Progress {
+  current: string;
+  started: string;
+  completed: CompletedRow[];
+}
+
+export interface Lesson {
+  slug: string;
+  markdown: string;
+  recallQuestions: string[];
+  hasDrill: boolean;
+  hasChallenge: boolean;
+}
+
+export interface Challenge {
+  slug: string;
+  mission: string;
+  scorecard: string;
+}
+
+export interface Turn {
+  kind: "tutor" | "learner" | "activity";
+  text: string;
+  ts: number;
+}
+
+export interface TutorStatus {
+  state: "starting" | "online" | "dead";
+  sessionId: string | null;
+  slug: string | null;
+  model: string | null;
+}
+
+type Envelope<T> = { success: boolean; data: T | null; error: string | null };
+
+async function unwrap<T>(res: Response): Promise<T> {
+  const body = (await res.json()) as Envelope<T>;
+  if (!body.success || body.data === null) {
+    throw new Error(body.error ?? `request failed (${res.status})`);
+  }
+  return body.data;
+}
+
+export const api = {
+  curriculum: () => fetch("/api/curriculum").then((r) => unwrap<{ modules: Module[] }>(r)),
+  progress: () => fetch("/api/progress").then((r) => unwrap<Progress>(r)),
+  lesson: (slug: string) => fetch(`/api/lesson/${slug}`).then((r) => unwrap<Lesson>(r)),
+  drill: (slug: string) =>
+    fetch(`/api/drill/${slug}`).then(async (r) => {
+      const body = (await r.json()) as Envelope<{ slug: string; markdown: string } | null>;
+      return body.data; // null when no drill
+    }),
+  challenge: (slug: string) =>
+    fetch(`/api/challenge/${slug}`).then(async (r) => {
+      const body = (await r.json()) as Envelope<Challenge | null>;
+      return body.data;
+    }),
+  status: () => fetch("/api/tutor/status").then((r) => unwrap<TutorStatus>(r)),
+  history: (slug: string) =>
+    fetch(`/api/tutor/history/${slug}`).then((r) => unwrap<{ turns: Turn[] }>(r)),
+  startSession: (slug: string, fresh = false) =>
+    fetch("/api/tutor/session/start", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ slug, fresh }),
+    }),
+  sendInput: (text: string) =>
+    fetch("/api/tutor/session/input", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text }),
+    }),
+};
+
+/** Subscribe to the SSE event stream. Returns an unsubscribe fn. */
+export function subscribe(handlers: Record<string, (data: any) => void>): () => void {
+  const es = new EventSource("/api/tutor/events");
+  for (const [event, fn] of Object.entries(handlers)) {
+    es.addEventListener(event, (e) => {
+      try {
+        fn(JSON.parse((e as MessageEvent).data));
+      } catch {
+        fn({});
+      }
+    });
+  }
+  return () => es.close();
+}

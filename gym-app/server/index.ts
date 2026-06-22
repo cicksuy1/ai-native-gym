@@ -74,4 +74,9 @@ Bun.serve({
 
 console.log(`AI-Native Gym GUI on http://localhost:${PORT}`);
 watchProgress();
-startTutor(allSlugs()).catch((err) => console.error("tutor: startup failed:", (err as Error).message));
+// Resuming a conversation costs tokens, so we do NOT auto-warm on boot by
+// default — a server restart should never silently spend. Opt in with
+// GYM_WARM_ON_BOOT=1 to resume the learner's current module immediately.
+if (process.env.GYM_WARM_ON_BOOT === "1") {
+  startTutor(allSlugs()).catch((err) => console.error("tutor: startup failed:", (err as Error).message));
+}

@@ -78,6 +78,16 @@ describe("readProgress", () => {
     expect(readProgress().completed).toEqual([]);
   });
 
+  test("ignores an example ✅ row that lives inside an HTML comment", () => {
+    const local = `${TEMPLATE}
+<!-- Example the conductor writes:
+| 0 | Setup & Harness Fluency | \`harness\` | ✅ | 2026-06-22 | solid · solid · partial · solid · partial |
+-->
+`;
+    seedRepo(local);
+    expect(readProgress().completed).toEqual([]);
+  });
+
   test("reads a real started date when stamped", () => {
     const local = TEMPLATE.replace(
       "**Started:** <!-- the conductor stamps this -->",
