@@ -1,7 +1,8 @@
-# Module 10 — Orchestration at Scale & Knowing When *Not* To
+# Module 12 — Capstone: Orchestration at Scale & Knowing When *Not* To
 
-> **You are here:** the finale. You've learned every individual move — now we put them together at
-> scale, and learn the hardest judgment of all: when *not* to. This module loops back to every one
+> **You are here:** the **capstone** — the course's final project. You've learned every individual
+> move (through Module 11); now we put them together at scale, and learn the hardest judgment of all:
+> when *not* to. This module is both a new principle and the integration that loops back to every one
 > before it.
 
 ## Why this matters
@@ -22,7 +23,7 @@ knowing when the task earns an orchestra, and when it just wants one good player
 The 2026 orchestration pattern *inverts* traditional agent control flow: instead of the model
 deciding turn-by-turn, **you write deterministic control flow as plain code** and delegate each step
 to a fresh subagent (`RESEARCH.md`, Pillar 4). The core shape is **fan out → reduce → synthesize**,
-and its genius is a context-management trick (Module 1 again): *"the script holds the loop, the
+and its genius is a context-management trick (Module 2 again): *"the script holds the loop, the
 branching, and the intermediate results, so Claude's context only ever sees the final answer."*
 
 On top of that sit reusable **verification patterns** — the spine of the course, scaled up:
@@ -51,8 +52,8 @@ So the decision tree for the executor:
 
 | The work is… | Do this |
 |---|---|
-| One coupled feature | One session (Module 2/6) — **don't orchestrate** |
-| A few independent tasks | Parallel worktrees (Module 8) |
+| One coupled feature | One session (Modules 4/8) — **don't orchestrate** |
+| A few independent tasks | Parallel worktrees (Module 10) |
 | Huge, parallel, high-value (audit, migration, research) | Orchestrate: fan out → reduce → synthesize, with verify panels |
 | Anything you haven't scoped | Scope it first — never fan out on a fuzzy prompt |
 

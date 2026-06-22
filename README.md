@@ -53,13 +53,18 @@ The full rules live in [`AGENTS.md`](./AGENTS.md); the module list in [`CURRICUL
 
 ---
 
-## The curriculum (11 modules)
+## The curriculum (13 modules, four parts)
 
-`harness` · `context` · `planning` · `spec` · **`verify`** ⭐ · `tdd` · `review` · `delegate` ·
-`parallel` · `extend` · `orchestrate`
+Built like a book — **start by doing**, the whole arc in an early exemplar, deep single-idea chapters,
+and integration projects:
 
-Module 4 (Verification) is the spine — every later module loops back to it. See
-[`CURRICULUM.md`](./CURRICULUM.md) for the principle behind each.
+- **Part I — Getting Started:** `harness` · `first-drive`
+- **Part II — The Core Loop:** `context` · **`verify`** ⭐ · `planning` · `spec` · `ship-feature` *(project)*
+- **Part III — At Scale & In Command:** `tdd` · `review` · `delegate` · `parallel` · `extend`
+- **Part IV — Orchestration & Judgment:** `orchestrate` *(capstone)*
+
+Module 3 (Verification) is the spine — placed early because every later module loops back to it. See
+[`CURRICULUM.md`](./CURRICULUM.md) for the principle and lesson **type** behind each.
 
 ---
 

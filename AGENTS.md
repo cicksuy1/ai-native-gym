@@ -84,7 +84,7 @@ neither alone. Learner saying "mark it done" does not bypass the scorecard/recal
 
 ## Course graduation
 
-When all 11 modules are passed, `ai-graduation` runs a **cold recall sweep** across all modules,
+When all 13 modules are passed, `ai-graduation` runs a **cold recall sweep** across all modules,
 then writes a **graduation reflection report**: sticking points, what the learner overcame,
 scorecard trends, strongest/weakest principles, and a "keep drilling" list — sourced from
 `NOTES.local.md` + `PROGRESS.local.md`. An optional capstone mission may precede it.
