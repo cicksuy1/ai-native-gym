@@ -90,6 +90,12 @@ export const api = {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ text }),
     }),
+  setModel: (model: string) =>
+    fetch("/api/tutor/model", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ model }),
+    }),
 };
 
 /** Subscribe to the SSE event stream. Returns an unsubscribe fn. */

@@ -30,11 +30,13 @@ export function App() {
   const [input, setInput] = useState("");
   const [cost, setCost] = useState(0);
   const [celebrating, setCelebrating] = useState(false);
+  const [model, setModel] = useState("sonnet");
 
   // Resizable / collapsible layout.
   const [sidebarW, setSidebarW] = useState(SIDEBAR.default);
   const [chatW, setChatW] = useState(CHAT.default);
   const [collapsed, setCollapsed] = useState(false);
+  const [chatCollapsed, setChatCollapsed] = useState(false);
 
   // A drag on a column edge updates that column's width live. `dir` is +1 when
   // dragging right grows the column (left sidebar) and -1 when it shrinks it
@@ -65,6 +67,7 @@ export function App() {
   useEffect(() => {
     api.curriculum().then((c) => setModules(c.modules)).catch(() => {});
     refreshProgress();
+    api.status().then((s) => { if (s.model) setModel(s.model); }).catch(() => {});
     const unsub = subscribe({
       tutor_partial: (d) => setPartial((p) => p + (d.text ?? "")),
       tutor_message: (d) => {
@@ -103,15 +106,42 @@ export function App() {
     api.sendInput(text).catch(() => {});
   }, [input]);
 
+  // Clear & restart the current module's conversation (a fresh SDK session).
+  // Guarded by a confirm since starting a new conversation costs tokens.
+  const clearConversation = useCallback(() => {
+    if (!slug) return;
+    if (!window.confirm("Clear this conversation and start the coach fresh? Your module progress is unaffected.")) {
+      return;
+    }
+    setTurns([]);
+    setPartial("");
+    api.startSession(slug, true).catch(() => {});
+  }, [slug]);
+
+  // Switch the coach model (applies on the next conversation start).
+  const changeModel = useCallback((m: string) => {
+    setModel(m);
+    api.setModel(m).catch(() => {});
+  }, []);
+
   const completed = new Set(progress?.completed.map((r) => r.module) ?? []);
 
-  const cols = `${collapsed ? "0px 0px" : `${sidebarW}px 6px`} minmax(0, 1fr) 6px ${chatW}px`;
+  const cols = [
+    collapsed ? "0px 0px" : `${sidebarW}px 6px`,
+    "minmax(0, 1fr)",
+    chatCollapsed ? "0px 0px" : `6px ${chatW}px`,
+  ].join(" ");
 
   return (
     <div className={`app${collapsed ? " collapsed" : ""}`} style={{ gridTemplateColumns: cols }}>
       {collapsed && (
         <button className="expand-rail" title="Show modules" onClick={() => setCollapsed(false)}>
           ☰
+        </button>
+      )}
+      {chatCollapsed && (
+        <button className="expand-rail right" title="Show coach" onClick={() => setChatCollapsed(false)}>
+          ‹
         </button>
       )}
       <aside className="sidebar">
@@ -195,13 +225,38 @@ export function App() {
       </main>
 
       <div
-        className="resizer"
+        className={`resizer${chatCollapsed ? " hidden" : ""}`}
         title="Drag to resize"
-        onPointerDown={startResize(setChatW, chatW, CHAT.min, CHAT.max, -1)}
+        onPointerDown={chatCollapsed ? undefined : startResize(setChatW, chatW, CHAT.min, CHAT.max, -1)}
       />
 
       <section className="chat">
-        <header className="chat-head">Coach</header>
+        <header className="chat-head">
+          <span className="coach-title"><span className="coach-dot" />Coach</span>
+          <div className="chat-controls">
+            <select
+              className="model-select"
+              value={model}
+              onChange={(e) => changeModel(e.target.value)}
+              title="Coach model — applies to the next conversation"
+            >
+              <option value="opus">Opus</option>
+              <option value="sonnet">Sonnet</option>
+              <option value="haiku">Haiku</option>
+            </select>
+            <button
+              className="clear-btn"
+              onClick={clearConversation}
+              disabled={!slug}
+              title="Clear & restart this module's conversation"
+            >
+              Clear
+            </button>
+            <button className="collapse-btn" title="Hide coach" onClick={() => setChatCollapsed(true)}>
+              ›
+            </button>
+          </div>
+        </header>
         <div className="turns">
           {turns.map((t, i) => (
             <div key={i} className={`turn ${t.kind}`}>
