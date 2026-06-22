@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { useTheme } from "./useTheme.ts";
 import {
   api,
   subscribe,
@@ -32,6 +33,7 @@ export function App() {
   const [celebrating, setCelebrating] = useState(false);
   const [model, setModel] = useState("sonnet");
   const [busy, setBusy] = useState(false);
+  const { theme, toggle: toggleTheme } = useTheme();
 
   // Resizable / collapsible layout.
   const [sidebarW, setSidebarW] = useState(SIDEBAR.default);
@@ -160,10 +162,23 @@ export function App() {
       )}
       <aside className="sidebar">
         <div className="brand-row">
-          <h1 className="brand">AI-Native Gym 🏋️</h1>
-          <button className="collapse-btn" title="Hide modules" onClick={() => setCollapsed(true)}>
-            ‹
-          </button>
+          <div className="brand-left">
+            <img className="brand-logo" src="/logo.svg" alt="" width={28} height={28} />
+            <h1 className="brand">AI-Native Gym</h1>
+          </div>
+          <div className="brand-actions">
+            <button
+              className="collapse-btn"
+              title={theme === "dark" ? "Switch to light theme" : "Switch to dark theme"}
+              aria-label="Toggle light / dark theme"
+              onClick={toggleTheme}
+            >
+              {theme === "dark" ? "☀" : "☾"}
+            </button>
+            <button className="collapse-btn" title="Hide modules" onClick={() => setCollapsed(true)}>
+              ‹
+            </button>
+          </div>
         </div>
         <p className="tagline">Become a better <em>executor</em> of AI coding tools.</p>
         <nav className="modules">

@@ -22,11 +22,41 @@
   color-scheme: dark;
 }
 
+/* ---- light theme: re-define the same variables; everything else follows ---- */
+:root[data-theme="light"] {
+  --bg: #f6f7f9;
+  --bg-2: #eaecf1;
+  --panel: #ffffff;
+  --panel-2: #f1f3f7;
+  --panel-3: #e3e7ee;
+  --border: #d3d9e2;
+  --border-soft: #e7eaf0;
+  --text: #11151c;
+  --text-2: #39414f;
+  --muted: #687587;
+  --accent: #2563eb;
+  --accent-soft: rgba(37, 99, 235, 0.10);
+  --accent-2: #b5790a;
+  --green: #138a5a;
+  --learner: #dce8fb;
+  color-scheme: light;
+}
+
+/* a few base rules hardcode dark-only colors — patch those for light */
+:root[data-theme="light"] .sidebar { background: linear-gradient(180deg, #fbfcfe 0%, var(--panel) 100%); }
+:root[data-theme="light"] .markdown code { color: #9a5b00; }
+:root[data-theme="light"] .markdown a { border-bottom-color: rgba(37, 99, 235, 0.4); }
+:root[data-theme="light"] .markdown tbody tr:hover { background: rgba(0, 0, 0, 0.03); }
+:root[data-theme="light"] .module-row.active { border-color: rgba(37, 99, 235, 0.35); }
+:root[data-theme="light"] .turn.streaming { border-color: rgba(37, 99, 235, 0.4); }
+:root[data-theme="light"] .composer button { color: #ffffff; }
+
 * { box-sizing: border-box; }
 html, body, #root { height: 100%; margin: 0; }
 body {
   background: var(--bg);
   color: var(--text);
+  transition: background 0.2s ease, color 0.2s ease;
   font-size: 15.5px;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
@@ -72,6 +102,9 @@ body.resizing * { user-select: none !important; }
 
 /* collapse / expand controls */
 .brand-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.brand-left { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.brand-logo { width: 28px; height: 28px; border-radius: 8px; flex-shrink: 0; display: block; }
+.brand-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
 .collapse-btn {
   background: transparent;
   border: 1px solid var(--border);
