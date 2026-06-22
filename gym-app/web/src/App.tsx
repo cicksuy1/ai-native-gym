@@ -40,6 +40,7 @@ export function App() {
   const [chatW, setChatW] = useState(CHAT.default);
   const [collapsed, setCollapsed] = useState(false);
   const [chatCollapsed, setChatCollapsed] = useState(false);
+  const [contentCollapsed, setContentCollapsed] = useState(false);
 
   // A drag on a column edge updates that column's width live. `dir` is +1 when
   // dragging right grows the column (left sidebar) and -1 when it shrinks it
@@ -142,24 +143,38 @@ export function App() {
 
   const completed = new Set(progress?.completed.map((r) => r.module) ?? []);
 
+  // Five grid tracks: [sidebar | rz | content | rz | chat]. A collapsed panel
+  // becomes a slim RAIL column (never a floating overlay), so nothing covers the
+  // tabs. Exactly one track is the flexible filler: the lesson normally, the chat
+  // when the lesson is collapsed, the sidebar when both are collapsed.
+  const RAIL = 36;
+  const contentTrack = contentCollapsed ? `${RAIL}px` : "minmax(0, 1fr)";
+  const chatTrack = chatCollapsed
+    ? `${RAIL}px`
+    : contentCollapsed
+      ? "minmax(0, 1fr)"
+      : `${chatW}px`;
+  const sidebarTrack =
+    !collapsed && contentCollapsed && chatCollapsed
+      ? "minmax(0, 1fr)"
+      : collapsed
+        ? `${RAIL}px`
+        : `${sidebarW}px`;
   const cols = [
-    collapsed ? "0px 0px" : `${sidebarW}px 6px`,
-    "minmax(0, 1fr)",
-    chatCollapsed ? "0px 0px" : `6px ${chatW}px`,
+    sidebarTrack,
+    collapsed ? "0px" : "6px",
+    contentTrack,
+    chatCollapsed || contentCollapsed ? "0px" : "6px",
+    chatTrack,
   ].join(" ");
 
   return (
-    <div className={`app${collapsed ? " collapsed" : ""}`} style={{ gridTemplateColumns: cols }}>
-      {collapsed && (
-        <button className="expand-rail" title="Show modules" onClick={() => setCollapsed(false)}>
-          ☰
+    <div className="app" style={{ gridTemplateColumns: cols }}>
+      {collapsed ? (
+        <button className="rail" title="Show modules" onClick={() => setCollapsed(false)}>
+          <span className="rail-label">Modules</span>
         </button>
-      )}
-      {chatCollapsed && (
-        <button className="expand-rail right" title="Show coach" onClick={() => setChatCollapsed(false)}>
-          ‹
-        </button>
-      )}
+      ) : (
       <aside className="sidebar">
         <div className="brand-row">
           <div className="brand-left">
@@ -204,6 +219,7 @@ export function App() {
           {cost > 0 && <span className="cost">${cost.toFixed(3)}</span>}
         </div>
       </aside>
+      )}
 
       <div
         className={`resizer${collapsed ? " hidden" : ""}`}
@@ -211,6 +227,11 @@ export function App() {
         onPointerDown={collapsed ? undefined : startResize(setSidebarW, sidebarW, SIDEBAR.min, SIDEBAR.max, 1)}
       />
 
+      {contentCollapsed ? (
+        <button className="rail center" title="Show lesson" onClick={() => setContentCollapsed(false)}>
+          <span className="rail-label">Lesson</span>
+        </button>
+      ) : (
       <main className="content">
         {celebrating && <div className="celebrate">🎉 Module passed — nicely driven!</div>}
         {!slug && (
@@ -226,12 +247,22 @@ export function App() {
         {slug && (
           <>
             <div className="tabs">
-              <button className={tab === "lesson" ? "on" : ""} onClick={() => setTab("lesson")}>Read</button>
-              <button className={tab === "drill" ? "on" : ""} onClick={() => setTab("drill")} disabled={!drill}>
-                Practice
-              </button>
-              <button className={tab === "challenge" ? "on" : ""} onClick={() => setTab("challenge")} disabled={!challenge}>
-                Challenge
+              <div className="tab-group">
+                <button className={tab === "lesson" ? "on" : ""} onClick={() => setTab("lesson")}>Read</button>
+                <button className={tab === "drill" ? "on" : ""} onClick={() => setTab("drill")} disabled={!drill}>
+                  Practice
+                </button>
+                <button className={tab === "challenge" ? "on" : ""} onClick={() => setTab("challenge")} disabled={!challenge}>
+                  Challenge
+                </button>
+              </div>
+              <button
+                className="collapse-btn"
+                title="Hide lesson panel"
+                aria-label="Hide lesson panel"
+                onClick={() => setContentCollapsed(true)}
+              >
+                ⊟
               </button>
             </div>
             <div className="panel markdown">
@@ -252,13 +283,19 @@ export function App() {
           </>
         )}
       </main>
+      )}
 
       <div
-        className={`resizer${chatCollapsed ? " hidden" : ""}`}
+        className={`resizer${chatCollapsed || contentCollapsed ? " hidden" : ""}`}
         title="Drag to resize"
-        onPointerDown={chatCollapsed ? undefined : startResize(setChatW, chatW, CHAT.min, CHAT.max, -1)}
+        onPointerDown={chatCollapsed || contentCollapsed ? undefined : startResize(setChatW, chatW, CHAT.min, CHAT.max, -1)}
       />
 
+      {chatCollapsed ? (
+        <button className="rail right" title="Show coach" onClick={() => setChatCollapsed(false)}>
+          <span className="rail-label">Coach</span>
+        </button>
+      ) : (
       <section className="chat">
         <header className="chat-head">
           <span className="coach-title">
@@ -327,6 +364,7 @@ export function App() {
           <button onClick={send} disabled={!slug || !input.trim()}>Send</button>
         </div>
       </section>
+      )}
     </div>
   );
 }
