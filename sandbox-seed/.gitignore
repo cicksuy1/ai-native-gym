@@ -1,0 +1,6 @@
+# Keep the learner's `git diff` clean so the proof-of-work check reads only real work.
+__pycache__/
+*.pyc
+.notes.json
+# Exported session transcript (gym infrastructure — the coach's ai-verify reads it; learner-private).
+.claude/last-session.jsonl

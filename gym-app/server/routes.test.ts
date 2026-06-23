@@ -55,7 +55,7 @@ describe("content routes", () => {
   test("GET /api/drill/:slug returns brief markdown", async () => {
     const res = (await handleApi(GET("/api/drill/planning")))!;
     const json = await body(res);
-    expect(json.data.markdown).toContain("Drill");
+    expect(json.data.markdown).toContain("Warm-up");
   });
 
   test("GET /api/challenge/:slug returns mission + scorecard", async () => {

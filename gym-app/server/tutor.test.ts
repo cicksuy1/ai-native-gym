@@ -68,9 +68,9 @@ describe("mergeSessionRecord", () => {
 
 describe("formatToolActivity", () => {
   test("formats common tools with icons", () => {
-    expect(formatToolActivity({ name: "Read", input: { file_path: "lessons/harness.md" } })).toBe(
-      "📖 Read lessons/harness.md",
-    );
+    expect(
+      formatToolActivity({ name: "Read", input: { file_path: "modules/0.harness/lesson.md" } }),
+    ).toBe("📖 Read modules/0.harness/lesson.md");
     expect(formatToolActivity({ name: "Skill", input: { skill: "ai-coach" } })).toBe("🎓 Skill ai-coach");
     expect(formatToolActivity({ name: "Write", input: { file_path: "progress/NOTES.local.md" } })).toBe(
       "✏️ Write progress/NOTES.local.md",

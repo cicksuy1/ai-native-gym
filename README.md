@@ -10,9 +10,9 @@ work, **verification loops**, delegation, staying in command) the way you actual
 > **Read this file first.** It's the front door and your orientation. Then start a session and the
 > coach takes it from there.
 
-> 🚧 **Status:** in active development. The curriculum, ruleset, and teaching style are in place;
-> the lessons, drills, and web UI are being built module by module (seed modules: Harness, Planning,
-> Verification).
+> 🚧 **Status:** in active development, but usable end-to-end today. All 13 modules are authored, and
+> the **sandbox proof-of-work** model is live — you do each challenge in your own Claude Code session
+> and the coach grades from your **real session transcript**, not your self-report.
 
 ---
 
@@ -40,12 +40,22 @@ The gym turns each of these into a module you *practice*, not just read.
 Every module follows the same loop:
 
 1. **Read** a short lesson (warm, example-first — see [`STYLE.md`](./STYLE.md)).
-2. **Practice** a structured drill — small reps, each with a clear pass signal.
-3. **Challenge** a realistic mission, graded by a **scorecard** on *how you drove the agent*:
-   *did you plan? engineer context? delegate well? close a verify loop? stay the executor?*
+2. **Practice** an *ungraded warm-up* on the practice sandbox — small reps, each with a clear pass
+   signal. When you finish a rep, the coach reads your session and reviews **how you drove** it.
+3. **Challenge** a realistic mission on the sandbox, graded by a **scorecard** on *how you drove the
+   agent*: *did you plan? engineer context? delegate well? close a verify loop? stay the executor?*
 
-It's **self-paced**. A module is "passed" when you've attempted the challenge, your scorecard clears
-a lenient bar (≥ 3/5 solid; weak spots are logged as "keep drilling", never blocking), and you've
+**You drive the work in your own Claude Code session** on `sandbox/` — a tiny throwaway Python project.
+The coach doesn't take your word for what you did: it reads your **session transcript + the sandbox
+`git diff`** and grades from the evidence. Two skills do this:
+
+- **`ai-verify`** — the graded **challenge** verifier. Confirms the *proof-of-work floor* (the
+  concrete "done when" was really achieved on the sandbox) and grades the five dimensions from evidence.
+- **`ai-spot`** — the **warm-up** spotter. Reads your session to coach your *form* on a drill, and
+  **never grades** (the warm-up is ungraded by design).
+
+It's **self-paced**. A module is "passed" when the proof-of-work floor is met, your scorecard clears a
+lenient bar (≥ 3/5 solid; weak spots are logged as "keep drilling", never blocking), and you've
 answered a cold recall question. The coach confirms it with you, then marks it done. Finish all
 modules and you get a **graduation reflection** on how you grew and what to keep drilling.
 
@@ -68,31 +78,70 @@ Module 3 (Verification) is the spine — placed early because every later module
 
 ---
 
-## Quickstart
+## Setup & requirements
 
-**Prerequisites:** [Claude Code](https://claude.com/claude-code), [Bun](https://bun.sh) (for the
-web UI), and `git`.
+### Prerequisites
 
-**Terminal (works today):**
+| Tool | Why you need it | Required? |
+|---|---|---|
+| [Claude Code](https://claude.com/claude-code) | You drive the agent through it — the whole point | **Yes** |
+| [Python 3](https://www.python.org/) | The sandbox is a stdlib-only Python project; you run `python -m unittest` / `python -m sandbox` (no pip) | **Yes** |
+| `git` | The sandbox is its own repo; the coach reads its `git diff` as proof of work | **Yes** |
+| [Bun](https://bun.sh) | Runtime/test-runner/bundler for the optional web UI | Only for the web UI |
+| [go-task](https://taskfile.dev) | Convenience wrapper for the commands below (every `task X` has a raw fallback) | Optional |
+
+**Auth.** The terminal flow uses your normal Claude Code login. The web UI runs a real **Claude Agent
+SDK** conversation under the `claude_code` preset, so it authenticates with that **same Claude Code
+login** — no separate API key to configure for the documented path. The server listens on `:4600`
+(override with the `GYM_PORT` env var).
+
+### 1. Clone
 
 ```bash
-git clone <your-fork-url> ai-native-gym
+git clone https://github.com/cicksuy1/ai-native-gym.git
 cd ai-native-gym
-# open the folder in Claude Code, then say:
-#   "start the AI gym"
 ```
 
-The `/ai-gym` skill places you at Module 0 and the coach runs the loop.
-
-**Web UI (Bun):**
+### 2. Create your practice sandbox (once)
 
 ```bash
-bun install        # or: task setup
-bun run app        # or: task app   → http://localhost:4600
+task setup-sandbox    # creates sandbox/ (your practice yard) from the seed, as its own git repo
 ```
 
-The UI is a *tunnel* to a real Claude Agent SDK conversation — it renders the lesson, the challenge,
+No `task`? Do it by hand:
+
+```bash
+cp -r sandbox-seed sandbox && git -C sandbox init -q && git -C sandbox add -A && git -C sandbox commit -q -m baseline
+```
+
+### 3. Train — terminal (works today)
+
+Open the folder in Claude Code, then say:
+
+```
+start the AI gym
+```
+
+The `/ai-gym` skill places you at Module 0 and the coach runs the read → practice → challenge loop.
+You do each drill and challenge in your **own** Claude Code session on `sandbox/`; the coach reads what
+you actually did and coaches/grades how you drove.
+
+### 4. Train — web UI (optional, Bun)
+
+```bash
+task setup      # or: cd gym-app && bun install
+task app        # or: cd gym-app && bun run app   →  http://localhost:4600
+```
+
+The UI is a *tunnel* to the same Claude Agent SDK conversation — it renders the lesson, the challenge,
 and your scorecard, and streams the coach. It does no grading itself; the coach runs the course.
+
+### 5. Verify your install
+
+```bash
+task test       # or: cd gym-app && bun test server/   →  88 pass / 0 fail
+task typecheck  # optional: type-check the gym-app
+```
 
 ---
 
@@ -105,12 +154,34 @@ ai-native-gym/
 ├── AGENTS.md          ← the authoritative teaching ruleset
 ├── STYLE.md           ← lesson/voice style guide (Rust-Book-derived)
 ├── CURRICULUM.md      ← module order + principles
-├── .claude/skills/    ← ai-gym, ai-coach, ai-memory, ai-ui, ai-graduation
-├── lessons/           ← one lesson per module (rendered in the UI)
-├── exercises/         ← per module: drill/ + challenge/ (+ scorecard)
-├── progress/          ← your private state (gitignored)
+├── Taskfile.yml       ← ops shortcuts (setup, setup-sandbox, app, test, typecheck)
+├── .claude/skills/    ← ai-gym, ai-coach, ai-memory, ai-ui, ai-graduation, ai-verify, ai-spot
+├── modules/           ← one folder per module ("<n>.<slug>/"): lesson.md + drill.md + challenge.md + scorecard.md
+├── sandbox-seed/      ← template for the practice yard (a tiny Python notes CLI); .claude/ ships a
+│                        session-export hook so the coach can read your transcript
+├── sandbox/           ← your practice yard, provisioned from the seed (gitignored)
+├── progress/          ← your private state: PROGRESS/NOTES/STRATEGY .local.md (gitignored)
 └── gym-app/           ← Bun + Agent SDK server, React/Vite/Tailwind UI
 ```
+
+---
+
+## Contributing & collaborating
+
+Contributions are welcome — improvements to lessons, drills, challenges, the skills, or the web UI.
+
+1. **Fork**, then branch off **`dev`** (the active line). `main` is the released branch; **open PRs
+   against `dev`**, not `main`.
+2. **Learn the house rules first.** [`AGENTS.md`](./AGENTS.md) is the authoritative teaching ruleset and
+   [`STYLE.md`](./STYLE.md) is the voice. Adapt *how* the gym teaches, but **don't water down** the
+   scorecard, the proof-of-work floor, or the verify-loop requirement — those are the course.
+3. **Before you push:** run `task test` (server suite) and `task typecheck`. Keep changes focused.
+4. **Commits:** conventional style — `type: desc` (`feat`, `fix`, `docs`, `refactor`, `test`, `chore`).
+5. **Never commit learner-private state.** `progress/*.local.md` and `sandbox/` are gitignored — keep
+   them that way; they're personal to each learner and stay on the machine.
+
+Found a teaching gap or a bug in the coach? Open an issue describing the module and what you'd expect —
+concrete examples (a transcript snippet, the scorecard you got) help a lot.
 
 ---
 

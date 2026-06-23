@@ -27,7 +27,8 @@ use it well, and avoid the few things the channel can't do.
 - **The rep still belongs to the learner.** They have their *own* Claude Code session and terminal —
   that's where the actual training happens. They run the drill and drive the challenge mission
   themselves; you coach, observe how they drove, and score it. Point them at
-  `exercises/<slug>/drill/BRIEF.md` and `exercises/<slug>/challenge/MISSION.md`; never do the rep for
+  `modules/<n>.<slug>/drill.md` and `modules/<n>.<slug>/challenge.md` (each module is one numbered
+  folder, e.g. `modules/0.harness/`); never do the rep for
   them. (This is the meta-twist of this gym: the learner practices driving an agent, while talking to
   you — an agent — about how they drove.)
 - **One teaching beat per turn.** The GUI is a conversation, not a wall of text. Teach one idea, show

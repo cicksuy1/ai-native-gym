@@ -18,7 +18,7 @@ import type { SDKUserMessage } from "@anthropic-ai/claude-agent-sdk";
 
 const HEARTBEAT_MS = 25_000;
 const MAX_TURNS = 200;
-const ALLOWED_TOOLS = ["Read", "Glob", "Grep", "Skill", "Edit", "Write"];
+const ALLOWED_TOOLS = ["Read", "Glob", "Grep", "Skill", "Edit", "Write", "Bash"];
 const VALID_MODELS = ["opus", "sonnet", "haiku"] as const;
 export type Model = (typeof VALID_MODELS)[number];
 
@@ -380,7 +380,10 @@ const DRIVER_FRESH = (slug: string) =>
   `The learner opened module ${slug} in the GUI — read progress/NOTES.local.md, ` +
   `progress/PROGRESS.local.md, and progress/STRATEGY.local.md; apply the ai-memory and ai-coach ` +
   `skills (let the strategy set your recall lead, how hard you push the habit, pacing, and hints), ` +
-  `then run the AGENTS.md read → practice → challenge loop on it. Your markdown renders directly to them.`;
+  `then run the AGENTS.md read → practice → challenge loop on it. Never grade or critique how they ` +
+  `drove from self-report: when they report a warm-up done, invoke the ai-spot skill to review their ` +
+  `session transcript (ungraded — no scorecard, never ai-graduation); when they report the challenge ` +
+  `done, invoke ai-verify first, then ai-graduation for the pass. Your markdown renders directly to them.`;
 
 const DRIVER_RESUME = (slug: string) =>
   `The learner re-opened module ${slug} — continue where you left off. ` +

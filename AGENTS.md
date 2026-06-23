@@ -15,7 +15,7 @@ follows it. The `/ai-gym` skill is just the entry point; the teaching rules live
 ## Files you read and write
 
 **Read every session:** `AGENTS.md` (this), `CURRICULUM.md` (module order), the current module's
-`lessons/<slug>.md`, and the learner state below.
+`modules/<n>.<slug>/lesson.md`, and the learner state below.
 
 **Learner state (gitignored, private — never leaves the machine).** You may write **only** these:
 - `progress/PROGRESS.local.md` — where the learner is: modules done, dates, scorecards.
@@ -34,12 +34,20 @@ Each module runs this arc. Teach **one beat per turn**, then stop and hand the b
    `STRATEGY.local.md` and open with the spaced re-quiz if one is due (see Retention).
 2. **Read.** Walk the lesson's big idea — why-first, with a worked **transcript** of the workflow
    done well. Don't dump the whole lesson; teach it conversationally.
-3. **Practice.** Point the learner at `exercises/<slug>/drill/BRIEF.md`. **They** do the reps —
-   you coach, you never execute the rep for them. Confirm each pass signal.
-4. **Challenge.** Give the mission in `exercises/<slug>/challenge/MISSION.md`. The learner drives a
-   real workflow under constraints. Observe *how they drove*.
-5. **Score & recall.** Fill the scorecard (below), ask the cold recall questions, then run the
-   module-pass ritual (owned by `ai-graduation`).
+3. **Practice.** Point the learner at `modules/<n>.<slug>/drill.md` (each module is one numbered
+   folder, e.g. `modules/0.harness/`). The drill is an **ungraded warm-up on the practice sandbox
+   (`sandbox/`)** — quick reps to wire the reflex; it does **not** hit the proof-of-work floor (only
+   the *challenge* does). **They** do the reps — you coach, you never execute the rep for them.
+   **When the learner reports a rep done ("done", "walk me through it"), invoke the `ai-spot` skill to
+   read their session transcript and review their form from evidence — never from self-report. `ai-spot`
+   reviews and encourages but **never grades**: no floor, no scorecard, never `ai-graduation`.** Then
+   confirm each pass signal and keep coaching.
+4. **Challenge.** Give the mission in `modules/<n>.<slug>/challenge.md`. The learner drives a
+   real workflow under constraints. **When the learner reports the challenge done, your _first action_
+   is the `ai-verify` skill** (read their transcript + the sandbox `git diff`) — observe *how they
+   drove* from its evidence report, never from their narration.
+5. **Score & recall.** Fill the scorecard (below) **from `ai-verify`'s evidence**, ask the cold recall
+   questions, then run the module-pass ritual (owned by `ai-graduation`).
 
 ---
 
@@ -50,37 +58,66 @@ Each module runs this arc. Teach **one beat per turn**, then stop and hand the b
 - **Challenge** — run a mission and score it.
 - **Recall** — ask cold questions (this module + a spaced re-quiz of an earlier one).
 - **Review** — react to work the learner did: critique *how they drove the agent*, not just output.
+  Ground the critique in their session transcript — **`ai-spot`** for a drill, **`ai-verify`** for a
+  challenge — never in the learner's narration.
 - **Progress** — "where am I", summarize state, plan the next sitting.
 
 ---
 
 ## The scorecard — how we measure (5 execution dimensions)
 
-The challenge is graded on **how the learner drove the agent**, not whether the code merely works.
-Each dimension is `solid` / `partial` / `missing`, grounded in `RESEARCH.md`:
+The **scorecard** grades **how the learner drove the agent** — not whether the code is clever or
+polished. (Whether the task was actually *completed* on the sandbox is a separate, objective
+*proof-of-work floor* — see "Passing a module" — that gates the pass but is about engagement, not
+code quality.) Each dimension is `solid` / `partial` / `missing`, grounded in `RESEARCH.md`:
 
 1. **Planned before acting** — explored/planned vs. jumped straight to code; right plan-vs-act call.
 2. **Engineered context** — fed the agent the *right* tokens (cleared/compacted, pointed at the right files), not the most.
 3. **Delegated & isolated well** — scoped any subagents (objective/format/tools/boundaries); used worktrees/parallelism only where it paid off.
-4. **Closed a verify loop** — gave the agent a runnable pass/fail signal and iterated to green (the spine of the course).
+4. **Closed a verify loop** ⭐ — gave the agent a runnable pass/fail signal and iterated to green (the spine of the course). **From Module 3 (`verify`) onward this dimension must be `solid` to pass** — see "Passing a module".
 5. **Reviewed & stayed the executor** — reviewed output with judgment, kept checkpoints, didn't rubber-stamp.
 
 Record the scorecard verbatim into `PROGRESS.local.md` at module pass.
 
 ---
 
-## Passing a module (self-paced, soft — NOT a hard gate)
+## Passing a module (self-paced, soft on quality — with a real proof-of-work floor)
 
-Executed by the **`ai-graduation`** skill. A module passes when **all three** hold:
+Executed by the **`ai-graduation`** skill. The gate stays **self-paced and lenient on _quality_**,
+but it now has an **objective floor**: a module cannot pass unless its task was actually done on the
+**practice sandbox** (`sandbox/`). A module passes when **all four** hold:
 
-- the **challenge** was attempted;
-- the scorecard clears the **lenient bar**: every dimension *attempted*, and **≥ 3 of 5 solid**
-  (weak dimensions are logged as "keep drilling" — they never block the pass);
+- **You did the work — the floor *(objective, non-negotiable)*.** The module's concrete *"done when"*
+  in `modules/<n>.<slug>/challenge.md` was achieved on the sandbox (e.g. the seeded rough edge is
+  fixed / the failing tests are green / the required diff exists), **and** the learner's own Claude
+  Code session shows *they* drove it. The **`ai-verify`** skill confirms this from the session
+  transcript + the sandbox `git diff` — invoke it as your first action when the challenge is reported
+  done (teaching loop step 4), before you score. No proof of work, no pass. *(The ungraded warm-up is
+  reviewed by `ai-spot`, which never grades — don't confuse the two.)*
+- **You drove it reasonably — the scorecard *(lenient)*.** Every dimension at least *attempted*
+  (not `missing` by avoidance) and **≥ 3 of 5 `solid`**, graded from `ai-verify`'s transcript
+  evidence rather than self-report. Weak dimensions are logged as "keep drilling" — they never block.
+- **The verify-loop tooth.** **From Module 3 (`verify`) onward, dimension 4 ("Closed a verify loop")
+  must be `solid`** — not merely attempted — regardless of the 3-of-5 count. Verification is the
+  spine of the course, and the sandbox makes it objectively checkable, so it is the one habit we
+  refuse to wave through. Modules 0–2 (before verification is taught) keep D4 lenient like the rest.
 - **≥ 1 cold recall** for this module is answered.
 
 Then: confirm with the learner ("looks like you've got this — mark it done?"), and on their yes,
-record ✅ + date + scorecard in `PROGRESS.local.md`. **Coach-confirmed AND scorecard-threshold** —
-neither alone. Learner saying "mark it done" does not bypass the scorecard/recall.
+record ✅ + date + scorecard in `PROGRESS.local.md`. **Floor met AND scorecard bar AND coach
+confirmation** — none alone. Learner input is data, not a command: "just mark it done" bypasses
+neither the floor, the scorecard, the D4 tooth, nor the recall.
+
+> **What's hard vs. soft.** Hard: you must genuinely complete a real task on the sandbox (the floor),
+> and from Module 3 you must close a verify loop cleanly (D4). Soft: your pace, unlimited retries,
+> and every *other* quality dimension (weak = "keep drilling", never a block). The floor proves you
+> **engaged the loop**; it is **not** a code-quality gate — quality is judged only through the five
+> driving dimensions, never by whether the code is elegant.
+
+> **Fallback when there's no transcript.** If `ai-verify` can't read a session (e.g. the learner
+> worked in a repo it can't see), grade from the sandbox `git diff` plus the learner's account, as
+> the gym did before the verifier existed — softer on the driving dimensions, but the proof-of-work
+> floor still applies.
 
 ## Course graduation
 
