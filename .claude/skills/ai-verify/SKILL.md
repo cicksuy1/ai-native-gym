@@ -1,6 +1,6 @@
 ---
 name: ai-verify
-description: Use when running as the AI-Native Gym conductor and a learner has just done a module's practice or challenge on the practice sandbox and you need to check what they ACTUALLY did before grading. The verifier reads the learner's own Claude Code session transcript (the .jsonl under ~/.claude/projects/) plus the sandbox `git diff`, confirms the module's objective proof-of-work floor (was the concrete "done when" really achieved on `sandbox/`?), and produces an evidence summary mapped to the gym's five execution dimensions — so grading rests on what happened, not the learner's self-report. Invoke it whenever `ai-graduation` is about to decide a pass, whenever you'd otherwise be tempted to take the learner's word for what they did, or when the learner says "I finished the challenge / mark it done". Evidence only — it never marks the pass itself (`ai-graduation` owns that) and it is not a hard auto-gate.
+description: Use when running as the AI-Native Gym conductor and a learner has just done a module's graded CHALLENGE on the practice sandbox and you need to check what they ACTUALLY did before a pass is decided. The verifier reads the learner's own Claude Code session transcript (the .jsonl under sandbox/.claude/ or ~/.claude/projects/) plus the sandbox `git diff`, confirms the module's objective proof-of-work floor (was the concrete "done when" really achieved on `sandbox/`?), and produces an evidence summary mapped to the gym's five execution dimensions — so grading rests on what happened, not the learner's self-report. Invoke it whenever `ai-graduation` is about to decide a pass, whenever you'd otherwise be tempted to take the learner's word for what they did on a challenge, or when the learner says "I finished the challenge / mark it done". Evidence only — it never marks the pass itself (`ai-graduation` owns that) and it is not a hard auto-gate. For an UNGRADED warm-up / drill, use `ai-spot` instead — this skill is for the challenge's proof-of-work floor and the pass decision.
 ---
 
 # AI-Native Gym conductor — the verifier (evidence, not verdicts)
@@ -14,6 +14,11 @@ sources, then hand the evidence to **`ai-graduation`**, which owns the pass deci
 Read `AGENTS.md` first if you haven't this session — its **scorecard** (five dimensions) and the
 **"Passing a module"** gate (the proof-of-work floor + the Module-3 verify-loop tooth) are the law.
 This skill only *gathers and maps evidence* for them.
+
+**Scope — this is the CHALLENGE verifier.** Use it when a graded challenge is on the table (it feeds
+`ai-graduation` the evidence for a pass). For an **ungraded warm-up / drill**, use **`ai-spot`**
+instead — same session-reading, but it reviews form and never grades. Don't run the proof-of-work
+floor or the scorecard on a drill.
 
 When you run behind the gym-app GUI the conductor has **scoped, read-only Bash** for exactly this
 work — read-only git subcommands (`status`/`diff`/`log`/`show`), `python -m unittest`, and read-only

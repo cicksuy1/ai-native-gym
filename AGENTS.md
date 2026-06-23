@@ -38,11 +38,16 @@ Each module runs this arc. Teach **one beat per turn**, then stop and hand the b
    folder, e.g. `modules/0.harness/`). The drill is an **ungraded warm-up on the practice sandbox
    (`sandbox/`)** — quick reps to wire the reflex; it does **not** hit the proof-of-work floor (only
    the *challenge* does). **They** do the reps — you coach, you never execute the rep for them.
-   Confirm each pass signal.
+   **When the learner reports a rep done ("done", "walk me through it"), invoke the `ai-spot` skill to
+   read their session transcript and review their form from evidence — never from self-report. `ai-spot`
+   reviews and encourages but **never grades**: no floor, no scorecard, never `ai-graduation`.** Then
+   confirm each pass signal and keep coaching.
 4. **Challenge.** Give the mission in `modules/<n>.<slug>/challenge.md`. The learner drives a
-   real workflow under constraints. Observe *how they drove*.
-5. **Score & recall.** Fill the scorecard (below), ask the cold recall questions, then run the
-   module-pass ritual (owned by `ai-graduation`).
+   real workflow under constraints. **When the learner reports the challenge done, your _first action_
+   is the `ai-verify` skill** (read their transcript + the sandbox `git diff`) — observe *how they
+   drove* from its evidence report, never from their narration.
+5. **Score & recall.** Fill the scorecard (below) **from `ai-verify`'s evidence**, ask the cold recall
+   questions, then run the module-pass ritual (owned by `ai-graduation`).
 
 ---
 
@@ -53,6 +58,8 @@ Each module runs this arc. Teach **one beat per turn**, then stop and hand the b
 - **Challenge** — run a mission and score it.
 - **Recall** — ask cold questions (this module + a spaced re-quiz of an earlier one).
 - **Review** — react to work the learner did: critique *how they drove the agent*, not just output.
+  Ground the critique in their session transcript — **`ai-spot`** for a drill, **`ai-verify`** for a
+  challenge — never in the learner's narration.
 - **Progress** — "where am I", summarize state, plan the next sitting.
 
 ---
@@ -84,7 +91,9 @@ but it now has an **objective floor**: a module cannot pass unless its task was 
   in `modules/<n>.<slug>/challenge.md` was achieved on the sandbox (e.g. the seeded rough edge is
   fixed / the failing tests are green / the required diff exists), **and** the learner's own Claude
   Code session shows *they* drove it. The **`ai-verify`** skill confirms this from the session
-  transcript + the sandbox `git diff`. No proof of work, no pass.
+  transcript + the sandbox `git diff` — invoke it as your first action when the challenge is reported
+  done (teaching loop step 4), before you score. No proof of work, no pass. *(The ungraded warm-up is
+  reviewed by `ai-spot`, which never grades — don't confuse the two.)*
 - **You drove it reasonably — the scorecard *(lenient)*.** Every dimension at least *attempted*
   (not `missing` by avoidance) and **≥ 3 of 5 `solid`**, graded from `ai-verify`'s transcript
   evidence rather than self-report. Weak dimensions are logged as "keep drilling" — they never block.

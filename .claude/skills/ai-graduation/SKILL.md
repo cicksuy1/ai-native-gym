@@ -20,14 +20,15 @@ law; this skill executes them.
 A module passes when **all four** conditions hold, and you then **confirm it with the learner**.
 Check the conditions in order; do not skip ahead.
 
-1. **The work was actually done — the floor.** The module's concrete *"done when"* in
-   `modules/<n>.<slug>/challenge.md` (each module is one numbered folder, e.g. `modules/0.harness/`)
-   was achieved on the **practice sandbox** (`sandbox/`) — the seeded rough edge is fixed / the
-   failing tests are green / the required diff exists — **and** the learner's own Claude Code session
-   shows *they* drove it (not just read or pasted). Confirm via the **`ai-verify`** skill, which reads
-   the session transcript + the sandbox `git diff`. This floor is **objective and non-negotiable**:
-   no proof of work, no pass. *(Fallback: if no transcript is readable, grade from the sandbox diff +
-   the learner's account; the floor still holds.)*
+1. **The work was actually done — the floor.** **Your first action, before grading anything, is to
+   invoke the `ai-verify` skill** — base every condition below on its evidence report, never on the
+   learner's account. It reads the session transcript + the sandbox `git diff` and checks the module's
+   concrete *"done when"* in `modules/<n>.<slug>/challenge.md` (each module is one numbered folder,
+   e.g. `modules/0.harness/`): was it achieved on the **practice sandbox** (`sandbox/`) — the seeded
+   rough edge fixed / the failing tests green / the required diff present — **and** does the learner's
+   own session show *they* drove it (not just read or pasted)? This floor is **objective and
+   non-negotiable**: no proof of work, no pass. *(Fallback: if no transcript is readable, `ai-verify`
+   grades from the sandbox diff + the learner's account at Confidence: low; the floor still holds.)*
 2. **The scorecard clears the lenient bar.** Grade all five execution dimensions from
    `AGENTS.md` — *Planned before acting? · Engineered context? · Delegated & isolated well? · Closed
    a verify loop? · Reviewed & stayed the executor?* — each `solid` / `partial` / `missing`,
