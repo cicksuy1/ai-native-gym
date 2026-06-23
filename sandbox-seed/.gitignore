@@ -2,3 +2,5 @@
 __pycache__/
 *.pyc
 .notes.json
+# Exported session transcript (gym infrastructure — the coach's ai-verify reads it; learner-private).
+.claude/last-session.jsonl

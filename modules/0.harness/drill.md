@@ -39,6 +39,16 @@ and where is it called from?"* Then confirm it changed nothing — `git -C sandb
 - **Pass signal:** you got a useful answer **and** the sandbox is unchanged. You felt the difference
   between "asking" and "doing" — the gather phase of the loop with zero edit risk.
 
+## Rep 5 — Find where the harness recorded you (the evidence)
+
+That session you just ran left a record. Find it: look under `~/.claude/projects/` for the folder
+whose name matches your sandbox path (each non-alphanumeric char becomes `-`, so it ends
+`…-ai-native-gym-sandbox`), and open the newest `.jsonl` inside. Scroll it — notice it logged every
+tool call you made. (The sandbox also auto-mirrors the latest one to `sandbox/.claude/last-session.jsonl`.)
+
+- **Pass signal:** you found your transcript and can say, in one line, why it — not your memory of the
+  session — is what the coach verifies your driving against.
+
 ## When you're done
 
 Tell the coach which reps you did and what surprised you. The coach will ask you to put the loop and

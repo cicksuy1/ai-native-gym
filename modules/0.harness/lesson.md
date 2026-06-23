@@ -145,6 +145,22 @@ number of packs (or your own hand-rolled config) can fill them.
 > your user `~/.claude/settings.json`. Open one and find (or imagine adding) `defaultMode`. You've now
 > seen where the car's configuration lives — we'll tune it in later modules.
 
+### Where your harness records you — and why it's the evidence
+
+Here's a fact that turns out to be load-bearing for this whole course: **the harness keeps a complete
+record of how you drove.** Every Claude Code session is logged, line by line, as a JSONL transcript at
+`~/.claude/projects/<munged-cwd>/<session-id>.jsonl` — where `<munged-cwd>` is your working-directory
+path with each non-alphanumeric character swapped for a `-` (so `…/ai-native-gym/sandbox` lives under a
+folder ending `…-ai-native-gym-sandbox`). That file records every `tool_use`: what you read, when you
+planned, what you edited, whether you ran a check.
+
+Why a *day-zero* lesson cares: this course grades **how you drove**, and your transcript — not your
+self-report — is the evidence. The coach's verifier reads it. "I planned first, then tested" is a
+claim; the transcript either shows reads-before-edits-then-a-re-run, or it doesn't. That gap between
+*claim* and *record* is the entire reason verification beats self-report — the lesson you'll drill for
+twelve modules. (To make this painless, the practice sandbox auto-exports your latest transcript to
+`sandbox/.claude/last-session.jsonl` so the coach can always find it.)
+
 ## Watch it done well
 
 *Transcript 0-1: a developer chooses the gear first, reads the surface, then acts deliberately.*

@@ -4,5 +4,13 @@
     "allow": [],
     "deny": []
   },
-  "hooks": {}
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          { "type": "command", "command": "sh .claude/hooks/export-session.sh" }
+        ]
+      }
+    ]
+  }
 }

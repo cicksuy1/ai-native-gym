@@ -44,21 +44,42 @@ floor. You need both.
 
 ## Step 1 — Find the session transcript
 
-The learner worked in `sandbox/`, so the session you want has that as its working directory.
+The learner worked in `sandbox/`, so the session you want has that as its working directory. There are
+two ways to reach it; **try the fixed path first** — it's deterministic and in-repo.
 
-1. List candidate logs: the `.jsonl` files under `~/.claude/projects/`. The folder name is the
-   working-directory path with non-alphanumeric characters replaced by `-` (e.g.
-   `C--Projects-...-ai-native-gym-sandbox`), so prefer the folder that matches the sandbox path.
-2. Each transcript line is a JSON object; early lines carry a `cwd` field. Confirm `cwd` points at
-   the sandbox, and pick the **most recent** session (by file mtime) unless the learner named one.
-3. If several sessions could be it, **ask the learner** which session id — don't guess across runs.
+**1a — Primary: the exported copy (one fixed path, no hunting).** The sandbox ships a `Stop` hook that
+mirrors the learner's live transcript to **`sandbox/.claude/last-session.jsonl`** after every turn. Try
+that path first (`Read` it, or `cat sandbox/.claude/last-session.jsonl`). If it exists, confirm its cwd
+(step 1c) and use it — no `~/.claude` hunt needed. This is the normal case → **Confidence: high**.
 
-If you cannot read any transcript, skip to **Fallback** below — don't fabricate a driving narrative.
+**1b — Fallback: folder-anchored discovery** (for a session that predates the hook, or where it didn't
+fire). Don't sweep all of `~/.claude/projects/` — go straight to the right folder:
+- A session's transcript lives at `~/.claude/projects/<munged-cwd>/<session-id>.jsonl`, where
+  `<munged-cwd>` is the working-directory path with **every non-alphanumeric character replaced by a
+  single `-`**. The sandbox path therefore maps to a folder ending in **`…-ai-native-gym-sandbox`**
+  (e.g. `C:\…\ai-native-gym\sandbox` → `C--…-ai-native-gym-sandbox`: `:`→`-`, `\`→`-`, space→`-`).
+- Locate it newest-first with `ls -dt ~/.claude/projects/*ai-native-gym-sandbox` (a single, pipe-free
+  command — the conductor's Bash guard rejects `|`/`;`/`&&`/redirection). Then `ls -t <folder>` and take
+  the top `*.jsonl` — that's the current/most-recent session. Prefer a session id the learner named.
+
+**1c — Confirm the cwd by grepping the file, NOT the first line.** Line 1 is a `{"type":"last-prompt"…}`
+header with **no `cwd`**; `cwd` first appears on the first real event (~line 4). Use
+`grep -m1 '"cwd"' <file>` and check it points at the sandbox (`…\ai-native-gym\sandbox`). Never decide
+"wrong session / no session" from line 1 alone.
+
+If several sessions could plausibly be it, **ask the learner** which session id — don't guess across
+runs. If you truly cannot read any transcript by either route, skip to **Fallback** below — don't
+fabricate a driving narrative.
 
 ## Step 2 — Read what actually happened
 
 Walk the transcript in order and tag each `tool_use` to a phase of the loop. The *sequence* matters
 as much as the counts — planning means reading **before** editing, not at all.
+
+A live session's transcript can be large and is still **growing** (the learner may not be done). Don't
+blindly `Read` a multi-MB file — sample it: `grep -n '"tool_use"' <file>` to get the action timeline,
+then read around the interesting line numbers. Re-listing and taking the newest file handles the fact
+that it's still being written.
 
 | Signal in the transcript | What it evidences |
 |---|---|
