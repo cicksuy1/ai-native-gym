@@ -136,12 +136,20 @@ Validates against allowlist, persists into `.session.json`, returns
   ['user','project','local']` · `includePartialMessages` · `resume` per lifecycle · `model` when set.
 - Module driver turn (session/start): the learner opened `<slug>` — read the three progress files,
   apply `ai-memory` + `ai-coach`, run the read → practice → challenge loop. Markdown renders directly.
-- **Tool policy** (`allowedTools: ['Read','Glob','Grep','Skill','Edit','Write']`, enforced by
-  `canUseTool` — pre-approval means zero permission prompts, guards stay alive):
+- **Tool policy** (`allowedTools: ['Read','Glob','Grep','Skill','Edit','Write','Bash']`, enforced by
+  `canUseTool` → `evaluateToolUse` — pre-approval means zero permission prompts, guards stay alive):
   - `Edit`/`Write`: ONLY the resolved paths `progress/PROGRESS.local.md`, `progress/NOTES.local.md`,
     and `progress/STRATEGY.local.md` — never any other file (the learner does their own reps in their
     own session; the conductor never writes course content or learner code).
-  - No `Bash` (there is no test-GREEN gate in this gym — the coach scores the learner's *driving*).
+  - `Bash`: **scoped, read-only** — for `ai-verify`, which must find/read the learner's session
+    transcript and confirm the proof-of-work floor on `sandbox/`. Allowed only as a single
+    metacharacter-free command matching the allowlist: read-only git (`status`/`diff`/`log`/`show`),
+    `python -m unittest`, and read-only inspection (`ls`/`cat`/`head`/`tail`/`find`/`grep`/`rg`/`wc`/
+    `pwd`/`stat`). Any chaining/piping/redirection/substitution (`;`/`|`/`&&`/`>`/`` ` ``/`$(`) or
+    write/network command (`rm`, `curl`, git commit/push/reset/checkout/clean/add/restore) is denied.
+    Read access isn't widened — `Read` already allows any path; the only new capability is read-only
+    *execution*. (This is the deliberate, accepted security tradeoff that makes the floor enforceable
+    behind the GUI.)
   - `Read`/`Glob`/`Grep`/`Skill`: allowed (read-only).
 
 ## Presentation & input (ai-ui skill)

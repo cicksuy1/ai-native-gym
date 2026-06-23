@@ -18,7 +18,7 @@ import type { SDKUserMessage } from "@anthropic-ai/claude-agent-sdk";
 
 const HEARTBEAT_MS = 25_000;
 const MAX_TURNS = 200;
-const ALLOWED_TOOLS = ["Read", "Glob", "Grep", "Skill", "Edit", "Write"];
+const ALLOWED_TOOLS = ["Read", "Glob", "Grep", "Skill", "Edit", "Write", "Bash"];
 const VALID_MODELS = ["opus", "sonnet", "haiku"] as const;
 export type Model = (typeof VALID_MODELS)[number];
 
