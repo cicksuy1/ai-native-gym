@@ -48,7 +48,7 @@ describe("Edit/Write restriction", () => {
 
   test("denies writing a lesson file", () => {
     pinRoot();
-    const d = evaluateToolUse("Write", { file_path: "lessons/harness.md" });
+    const d = evaluateToolUse("Write", { file_path: "modules/0.harness/lesson.md" });
     expect(d.behavior).toBe("deny");
   });
 

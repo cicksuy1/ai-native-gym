@@ -97,7 +97,7 @@ describe("parseRecallQuestions", () => {
   });
 
   test("real harness lesson has 3 recall questions", () => {
-    expect(getLesson("harness").recallQuestions).toHaveLength(3);
+    expect(getLesson("harness").recallQuestions).toHaveLength(4);
   });
 });
 
@@ -115,7 +115,7 @@ describe("getDrill / getChallenge", () => {
   test("getDrill returns the BRIEF markdown", () => {
     const drill = getDrill("planning");
     expect(drill).not.toBeNull();
-    expect(drill!.markdown).toContain("Drill");
+    expect(drill!.markdown).toContain("Warm-up");
   });
 
   test("getChallenge returns mission + scorecard", () => {

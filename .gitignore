@@ -3,6 +3,10 @@ progress/*.local.md
 gym-app/.session.json
 gym-app/.chats/
 
+# The practice sandbox is provisioned from sandbox-seed/ as the learner's own
+# git repo; their work-in-progress stays local (see `task setup-sandbox`).
+sandbox/
+
 # Stray local captures
 screenshots/
 

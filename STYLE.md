@@ -1,6 +1,6 @@
 # STYLE — how every lesson, the README, and the coach must read
 
-This is the writing & teaching style for the whole gym. Every `lessons/<slug>.md`, the `README.md`,
+This is the writing & teaching style for the whole gym. Every `modules/<n>.<slug>/lesson.md`, the `README.md`,
 and the live coach (`ai-coach` / `ai-ui` skills) follow it. It is distilled directly from
 **"The Rust Programming Language"** book — the gold standard for warm, example-first technical
 teaching — and adapted for our subject (driving an AI agent, not learning a language).
@@ -108,7 +108,7 @@ Forward-links are for genuinely separate topics, never for "the real explanation
 
 **4. Integration / Project** — *e.g. M6 `ship-feature`, M12 `orchestrate` capstone.* Force the
 learner to combine **≥ 3 principles** on one realistic task. Anatomy: a short framing of what's being
-integrated and why now → the mission (mostly in `exercises/<slug>/challenge/`) → a scorecard that
+integrated and why now → the mission (mostly in `modules/<n>.<slug>/challenge.md`) → a scorecard that
 **spans the integrated principles** → reflection. *Rule:* less reading, more doing; a project may
 skip the separate practice drill (the mission *is* the rep).
 

@@ -12,6 +12,16 @@ tasks:
     cmds:
       - bun install
 
+  setup-sandbox:
+    desc: "Create the practice sandbox (sandbox/) from the seed — run once before Module 0"
+    status:
+      - test -d sandbox/.git
+    cmds:
+      - cp -r sandbox-seed sandbox
+      - git -C sandbox init -q
+      - git -C sandbox add -A
+      - git -C sandbox commit -q -m "baseline"
+
   test:
     desc: Run the server test suite (bun test)
     dir: gym-app

@@ -1,5 +1,6 @@
 // Curriculum + lesson/exercise parsing (see CONTRACT.md).
-// Parses CURRICULUM.md's module table and reads lessons/ + exercises/ content.
+// Parses CURRICULUM.md's module table and reads each module's "modules/<n>.<slug>/"
+// folder: lesson.md + (optional) drill.md + challenge.md + scorecard.md.
 // The conductor conversation owns all teaching/grading; this is read-only content.
 import { existsSync } from "node:fs";
 import { readRepoFile, resolveInRepo } from "./files.ts";
@@ -40,13 +41,16 @@ export function parseCurriculum(): Module[] {
   while ((m = ROW_RE.exec(text)) !== null) {
     const slug = m[3].trim();
     const rawTitle = m[2];
+    const number = Number(m[1]);
+    // Each module's material lives in one number-prefixed folder, kept in order.
+    const dir = `modules/${number}.${slug}`;
     modules.push({
-      number: Number(m[1]),
+      number,
       title: cleanTitle(rawTitle),
       slug,
       principle: m[4].trim(),
-      written: existsSync(resolveInRepo(`lessons/${slug}.md`)),
-      hasExercise: existsSync(resolveInRepo(`exercises/${slug}`)),
+      written: existsSync(resolveInRepo(`${dir}/lesson.md`)),
+      hasExercise: existsSync(resolveInRepo(`${dir}/challenge.md`)),
       isSpine: rawTitle.includes("⭐") || slug === "verify",
     });
   }
@@ -62,6 +66,16 @@ export function allSlugs(): string[] {
 /** Find a module by slug, or null. */
 export function findModule(slug: string): Module | null {
   return parseCurriculum().find((mod) => mod.slug === slug) ?? null;
+}
+
+/**
+ * On-disk folder holding all of a module's material, "modules/<number>.<slug>"
+ * (lesson.md + optional drill.md + challenge.md + scorecard.md). The number
+ * prefix keeps folders sorted in curriculum order. null if the slug is unknown.
+ */
+function moduleDir(slug: string): string | null {
+  const mod = findModule(slug);
+  return mod ? `modules/${mod.number}.${slug}` : null;
 }
 
 /**
@@ -100,19 +114,22 @@ export interface Lesson {
 
 /** Load a lesson: full markdown, recall questions, and which exercises exist. */
 export function getLesson(slug: string): Lesson {
-  const markdown = readRepoFile(`lessons/${slug}.md`);
+  const dir = moduleDir(slug);
+  const markdown = readRepoFile(`${dir}/lesson.md`);
   return {
     slug,
     markdown,
     recallQuestions: parseRecallQuestions(markdown),
-    hasDrill: existsSync(resolveInRepo(`exercises/${slug}/drill/BRIEF.md`)),
-    hasChallenge: existsSync(resolveInRepo(`exercises/${slug}/challenge/MISSION.md`)),
+    hasDrill: dir !== null && existsSync(resolveInRepo(`${dir}/drill.md`)),
+    hasChallenge: dir !== null && existsSync(resolveInRepo(`${dir}/challenge.md`)),
   };
 }
 
 /** Read a module's practice drill, or null if it has none. */
 export function getDrill(slug: string): { slug: string; markdown: string } | null {
-  const rel = `exercises/${slug}/drill/BRIEF.md`;
+  const dir = moduleDir(slug);
+  if (!dir) return null;
+  const rel = `${dir}/drill.md`;
   if (!existsSync(resolveInRepo(rel))) return null;
   return { slug, markdown: readRepoFile(rel) };
 }
@@ -121,9 +138,11 @@ export function getDrill(slug: string): { slug: string; markdown: string } | nul
 export function getChallenge(
   slug: string,
 ): { slug: string; mission: string; scorecard: string } | null {
-  const missionRel = `exercises/${slug}/challenge/MISSION.md`;
+  const dir = moduleDir(slug);
+  if (!dir) return null;
+  const missionRel = `${dir}/challenge.md`;
   if (!existsSync(resolveInRepo(missionRel))) return null;
-  const scorecardRel = `exercises/${slug}/challenge/SCORECARD.md`;
+  const scorecardRel = `${dir}/scorecard.md`;
   return {
     slug,
     mission: readRepoFile(missionRel),

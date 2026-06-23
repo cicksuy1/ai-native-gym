@@ -1,0 +1,4 @@
+# Keep the learner's `git diff` clean so the proof-of-work check reads only real work.
+__pycache__/
+*.pyc
+.notes.json

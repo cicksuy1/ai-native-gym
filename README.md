@@ -78,11 +78,14 @@ web UI), and `git`.
 ```bash
 git clone <your-fork-url> ai-native-gym
 cd ai-native-gym
+task setup-sandbox    # once: creates sandbox/ (your practice yard) from the seed
 # open the folder in Claude Code, then say:
 #   "start the AI gym"
 ```
 
-The `/ai-gym` skill places you at Module 0 and the coach runs the loop.
+The `/ai-gym` skill places you at Module 0 and the coach runs the loop. You do each module's
+challenge in your **own** Claude Code session on `sandbox/` — the coach reads what you actually did
+and grades how you drove. (No `task`? Just copy `sandbox-seed/` to `sandbox/` and `git init` it.)
 
 **Web UI (Bun):**
 
@@ -106,8 +109,9 @@ ai-native-gym/
 ├── STYLE.md           ← lesson/voice style guide (Rust-Book-derived)
 ├── CURRICULUM.md      ← module order + principles
 ├── .claude/skills/    ← ai-gym, ai-coach, ai-memory, ai-ui, ai-graduation
-├── lessons/           ← one lesson per module (rendered in the UI)
-├── exercises/         ← per module: drill/ + challenge/ (+ scorecard)
+├── modules/           ← one folder per module ("<n>.<slug>/"): lesson.md + drill.md + challenge.md + scorecard.md
+├── sandbox-seed/      ← template for the practice yard (a tiny Python notes CLI)
+├── sandbox/           ← your practice yard, provisioned from the seed (gitignored)
 ├── progress/          ← your private state (gitignored)
 └── gym-app/           ← Bun + Agent SDK server, React/Vite/Tailwind UI
 ```

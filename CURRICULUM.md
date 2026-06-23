@@ -20,9 +20,9 @@ means lessons are **not** all the same shape — each has a **type** (see [`STYL
 
 ## How a module works — read → practice → challenge
 
-1. **Read** the module's `lessons/<slug>.md` (in the web UI or your editor).
-2. **Practice** the structured drill in `exercises/<slug>/drill/` — small reps, each with a clear pass signal. *(Project modules skip the separate drill — the mission is the rep.)*
-3. **Challenge** the mission in `exercises/<slug>/challenge/` — a realistic task graded by a **scorecard** on *how you drove the agent*.
+1. **Read** the module's `modules/<n>.<slug>/lesson.md` (in the web UI or your editor). Each module is one numbered folder, e.g. `modules/0.harness/`.
+2. **Practice** the structured drill in `modules/<n>.<slug>/drill.md` — small reps, each with a clear pass signal. *(Project modules skip the separate drill — the mission is the rep.)*
+3. **Challenge** the mission in `modules/<n>.<slug>/challenge.md` — a realistic task graded by the `scorecard.md` on *how you drove the agent*.
 
 See [`AGENTS.md`](./AGENTS.md) for the teaching loop and the exact pass rules.
 

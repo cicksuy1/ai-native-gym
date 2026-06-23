@@ -62,7 +62,8 @@ All file IO is explicit UTF-8. `:slug` params MUST be validated against the curr
 ] }, "error": null }
 ```
 Parsed from `CURRICULUM.md`. `isSpine` is true for the ⭐ verify module. `written` = a
-`lessons/<slug>.md` exists; `hasExercise` = an `exercises/<slug>/` dir exists.
+`modules/<n>.<slug>/lesson.md` exists; `hasExercise` = a `modules/<n>.<slug>/challenge.md` exists.
+Each module is one numbered folder, e.g. `modules/0.harness/`.
 
 ### `GET /api/progress`
 ```jsonc
@@ -77,21 +78,21 @@ Parsed from `progress/PROGRESS.local.md` (template copied on first read if absen
 { "success": true, "data": { "slug": "harness", "markdown": "…",
   "recallQuestions": ["…"], "hasDrill": true, "hasChallenge": true }, "error": null }
 ```
-`markdown` is the full `lessons/<slug>.md`. `recallQuestions` parsed from the "## 🧠 Active recall"
+`markdown` is the full `modules/<n>.<slug>/lesson.md`. `recallQuestions` parsed from the "## 🧠 Active recall"
 section. Unknown slug → 404.
 
 ### `GET /api/drill/:slug`
 ```jsonc
-{ "success": true, "data": { "slug": "harness", "markdown": "<BRIEF.md>" } | null, "error": null }
+{ "success": true, "data": { "slug": "harness", "markdown": "<drill.md>" } | null, "error": null }
 ```
-Reads `exercises/<slug>/drill/BRIEF.md`. No drill → `data: null`. Unknown slug → 404.
+Reads `modules/<n>.<slug>/drill.md`. No drill → `data: null`. Unknown slug → 404.
 
 ### `GET /api/challenge/:slug`
 ```jsonc
-{ "success": true, "data": { "slug": "harness", "mission": "<MISSION.md>",
-  "scorecard": "<SCORECARD.md>" } | null, "error": null }
+{ "success": true, "data": { "slug": "harness", "mission": "<challenge.md>",
+  "scorecard": "<scorecard.md>" } | null, "error": null }
 ```
-Reads `exercises/<slug>/challenge/{MISSION,SCORECARD}.md`. No challenge → `data: null`. Unknown → 404.
+Reads `modules/<n>.<slug>/{challenge,scorecard}.md`. No challenge → `data: null`. Unknown → 404.
 
 ### `GET /api/tutor/status`
 ```jsonc
@@ -122,7 +123,7 @@ Validates against allowlist, persists into `.session.json`, returns
 | `tutor_partial` | `{ "text": "<delta>" }` | streaming text of the in-progress turn |
 | `tutor_message` | `{ "text": "<full markdown>" }` | a completed conductor turn — render as GFM |
 | `tutor_idle` | `{}` | the conductor's turn finished (or errored) — clear the "thinking" indicator |
-| `tool_activity` | `{ "text": "📖 Read lessons/harness.md" }` | the conductor used a tool — dimmed line |
+| `tool_activity` | `{ "text": "📖 Read modules/0.harness/lesson.md" }` | the conductor used a tool — dimmed line |
 | `session_changed` | `{ "slug", "sessionId", "model", "fresh" }` | a conversation started/resumed |
 | `progress_changed` | `{}` | PROGRESS.local.md changed — refetch `/api/progress` |
 | `module_complete` | `{ "slug" }` | watcher diff found a new ✅ row |

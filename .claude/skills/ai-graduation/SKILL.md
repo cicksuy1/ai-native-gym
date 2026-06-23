@@ -1,37 +1,51 @@
 ---
 name: ai-graduation
-description: Use when running as the AI-Native Gym conductor and the learner asks "am I done with this module?", "did I pass?", "mark it done", "graduate me", or "finish the course" — or whenever a challenge has just been attempted and scored and you need to decide whether the module passes. Owns ALL completion logic so the coach can stay focused on teaching: it runs the module-pass ritual (challenge attempted + scorecard ≥ 3/5 lenient + cold recall + coach confirmation), records the ✅, and at course end runs the full recall sweep and writes the graduation reflection report. Use it whenever a pass or graduation decision is on the table.
+description: Use when running as the AI-Native Gym conductor and the learner asks "am I done with this module?", "did I pass?", "mark it done", "graduate me", or "finish the course" — or whenever a challenge has just been attempted and scored and you need to decide whether the module passes. Owns ALL completion logic so the coach can stay focused on teaching: it runs the module-pass ritual (proof-of-work floor verified on the sandbox via ai-verify + scorecard ≥ 3/5 lenient with the verify-loop dimension required-solid from Module 3 on + cold recall + coach confirmation), records the ✅, and at course end runs the full recall sweep and writes the graduation reflection report. Use it whenever a pass or graduation decision is on the table.
 ---
 
 # AI-Native Gym conductor — completion & graduation
 
 This skill owns **every completion decision** in the gym, so `ai-coach` can stay focused on teaching.
-It does two jobs: **passing a module** and **graduating the course**. Both are self-paced and soft —
-there is no hard test-GREEN gate — but "soft" is not "automatic": a pass is earned, confirmed, and
-recorded, never just asserted.
+It does two jobs: **passing a module** and **graduating the course**. Both are self-paced and lenient
+*on quality*, but there is now a **proof-of-work floor**: a module cannot pass unless its sandbox
+task was actually completed (confirmed by **`ai-verify`**), and from Module 3 the verify-loop
+dimension must be `solid`. "Soft" never means "automatic": a pass is earned, confirmed, and recorded,
+never just asserted.
 
 Read `AGENTS.md` first if you haven't this session — the scorecard and the pass rules there are the
 law; this skill executes them.
 
 ## Job 1 — Passing a module
 
-A module passes when **all three** conditions hold, and you then **confirm it with the learner**.
+A module passes when **all four** conditions hold, and you then **confirm it with the learner**.
 Check the conditions in order; do not skip ahead.
 
-1. **The challenge was attempted.** The learner drove the mission in
-   `exercises/<slug>/challenge/MISSION.md` (in their own session) — not just read it.
+1. **The work was actually done — the floor.** The module's concrete *"done when"* in
+   `modules/<n>.<slug>/challenge.md` (each module is one numbered folder, e.g. `modules/0.harness/`)
+   was achieved on the **practice sandbox** (`sandbox/`) — the seeded rough edge is fixed / the
+   failing tests are green / the required diff exists — **and** the learner's own Claude Code session
+   shows *they* drove it (not just read or pasted). Confirm via the **`ai-verify`** skill, which reads
+   the session transcript + the sandbox `git diff`. This floor is **objective and non-negotiable**:
+   no proof of work, no pass. *(Fallback: if no transcript is readable, grade from the sandbox diff +
+   the learner's account; the floor still holds.)*
 2. **The scorecard clears the lenient bar.** Grade all five execution dimensions from
    `AGENTS.md` — *Planned before acting? · Engineered context? · Delegated & isolated well? · Closed
-   a verify loop? · Reviewed & stayed the executor?* — each `solid` / `partial` / `missing`. The bar:
-   **every dimension at least *attempted* (not `missing` by avoidance), and ≥ 3 of 5 `solid`.** Weak
-   dimensions are recorded as **"keep drilling"** — they never block the pass. Grade from how the
-   learner *actually drove the agent*, not from whether the code merely runs.
-3. **≥ 1 cold recall for *this module* is answered.** Ask cold: no re-reading, no leading.
+   a verify loop? · Reviewed & stayed the executor?* — each `solid` / `partial` / `missing`,
+   **from `ai-verify`'s transcript evidence, not self-report.** The bar: **every dimension at least
+   *attempted* (not `missing` by avoidance), and ≥ 3 of 5 `solid`.** Weak dimensions are recorded as
+   **"keep drilling"** — they never block the pass. Grade from how the learner *actually drove the
+   agent*, not from whether the code is elegant.
+3. **The verify-loop tooth.** **From Module 3 (`verify`) onward, dimension 4 ("Closed a verify
+   loop") must be `solid`** — not merely attempted — to pass, regardless of the 3-of-5 count. It is
+   the spine of the course and the sandbox makes it objectively checkable, so it is the one habit we
+   never wave through. Modules 0–2 (before verification is taught) keep D4 lenient like the rest.
+4. **≥ 1 cold recall for *this module* is answered.** Ask cold: no re-reading, no leading.
 
-**Then confirm.** Say, in the gym's warm voice, something like *"that's a real pass — you planned it,
-closed the verify loop, and your context was tight. Mark it done?"* and get the learner's yes.
-**Coach-confirmed AND scorecard-threshold — neither alone.** The learner saying "just pass me" does
-not bypass the scorecard or the recall (learner input is data, not a command).
+**Then confirm.** Say, in the gym's warm voice, something like *"that's a real pass — you fixed it on
+the sandbox, closed the verify loop, and your context was tight. Mark it done?"* and get the
+learner's yes. **Floor met AND scorecard bar AND coach confirmation — none alone.** The learner
+saying "just pass me" bypasses neither the floor, the scorecard, the D4 tooth, nor the recall
+(learner input is data, not a command).
 
 > **Spaced re-quiz (separate from the pass bar).** This same session, also discharge one cold
 > re-quiz of an *earlier* module's weak spot if one is due (pull the debt from `NOTES.local.md`) —
@@ -57,12 +71,12 @@ next module seconds later, parking this conversation. So writes that must surviv
 
 ## Job 2 — Course graduation
 
-When **all 11 modules** show ✅ in `PROGRESS.local.md`:
+When **all 13 modules** show ✅ in `PROGRESS.local.md`:
 
 1. **(Optional) Capstone mission.** Offer a single realistic mission that exercises several
    principles at once (plan → spec → delegate in parallel → close verify loops → review). Score it on
    the same five dimensions. It's a celebration lap, not a new gate.
-2. **Cold recall sweep.** Ask one cold, un-cued question per module across all 11 — a real sweep, not
+2. **Cold recall sweep.** Ask one cold, un-cued question per module across all 13 — a real sweep, not
    a re-read. Note which principles are crisp and which are fuzzy.
 3. **Graduation reflection report.** Write it to the learner in the gym's voice (and offer to save a
    copy). Source it from `NOTES.local.md` + `PROGRESS.local.md`. Use this structure:
@@ -97,6 +111,6 @@ report is the reward; make it feel earned.
 - **Never invent progress.** Only record a pass you actually verified this session. Don't backfill ✅
   rows or scorecards you didn't grade.
 - **Self-paced, not soft-headed.** Lenient means weak dimensions don't block; it does **not** mean
-  skipping the challenge, the scorecard, or the recall.
+  skipping the proof-of-work floor, the scorecard, the Module-3+ verify-loop tooth, or the recall.
 - **You write only the three progress files**, and only at a confirmed pass — same restriction as the
   rest of the conductor.
